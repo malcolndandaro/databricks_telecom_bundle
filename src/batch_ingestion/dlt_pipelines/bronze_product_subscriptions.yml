@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_bronze_product_subscriptions:
+      name: bronze_product_subscriptions
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../apply_changes_snapshot/product_subscriptions/bronze_product_subscriptions.sql
+      target: customer_bronze
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

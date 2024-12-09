@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_fact_invoicing:
+      name: fact_invoicing
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../facts/fact_invoicing.sql
+      target: billing_gold
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

@@ -1,0 +1,17 @@
+resources:
+  jobs:
+    Data_Warehousing_3_Gera_Analise_performance_produto:
+      name: "[Data Warehousing][3] Gera Analise performance produto"
+      tasks:
+        - task_key: gera_analise_performance_produto
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.analise_performance_produto.id}
+            full_refresh: false
+      tags:
+        cost_center: "300.02"
+        domain: customer
+        project: financeiro
+        uc_name: Data Warehousing
+        uc_step: "3"
+      queue:
+        enabled: true

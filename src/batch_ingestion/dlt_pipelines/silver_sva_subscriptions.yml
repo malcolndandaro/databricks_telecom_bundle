@@ -1,0 +1,17 @@
+resources:
+  pipelines:
+    pipeline_silver_sva_subscriptions:
+      name: silver_sva_subscriptions
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../apply_changes_snapshot/sva_subscriptions/silver_sva_subscriptions.sql
+        - notebook:
+            path: ../apply_changes_snapshot/sva_subscriptions/silver_sva_subscriptions_acfs.py
+      target: customer_silver
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

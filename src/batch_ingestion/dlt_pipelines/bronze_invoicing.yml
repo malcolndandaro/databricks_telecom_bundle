@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_bronze_invoicing:
+      name: bronze_invoicing
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../incremental/invoicing/bronze_invoicing.py
+      target: billing_bronze
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

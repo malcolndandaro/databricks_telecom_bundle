@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_dim_customer:
+      name: dim_customer
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../dimensions/dim_customer.py
+      target: customer_gold
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

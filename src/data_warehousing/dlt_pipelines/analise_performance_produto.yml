@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    analise_performance_produto:
+      name: analise_performance_produto
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../reports/analise_performance_produto.sql
+      target: billing_gold
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true

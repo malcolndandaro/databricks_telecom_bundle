@@ -1,0 +1,27 @@
+resources:
+  jobs:
+    Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing:
+      name: "[Ingestão][2] Ingere dados para bronze e processa silver: invoicing"
+      tasks:
+        - task_key: bronze_invoicing
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pipeline_bronze_invoicing.id}
+            full_refresh: false
+        - task_key: silver_invoicing
+          depends_on:
+            - task_key: bronze_invoicing
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pipeline_silver_invoicing.id}
+            full_refresh: false
+      tags:
+        cost_center: "200.001"
+        domain: billing
+        env: prod
+        project: billing
+        uc_name: Ingestão
+        uc_step: "2"
+      queue:
+        enabled: true
+      parameters:
+        - name: p_catalog
+          default: ${var.catalog_name}

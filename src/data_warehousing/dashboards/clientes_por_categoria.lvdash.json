@@ -1,0 +1,833 @@
+{
+    "datasets": [
+        {
+            "name": "a89e9b23",
+            "displayName": "analise_performance_produto",
+            "query": "SELECT a.* FROM databricks_telecom_bundle.billing_gold.analise_performance_produto a\n"
+        },
+        {
+            "name": "a7b8d8bc",
+            "displayName": "faturamento_por_categoria_e_mes",
+            "query": "SELECT \n    d.ANO,\n    d.NM_MES,\n    to_date(d.MES_ANO, 'MM-yyyy') as mes_ano,\n    case when c.CLIENT = 'P' then 'Purpura'\n          when c.CLIENT = 'S' then 'Silver'\n          when c.CLIENT = 'G' then 'Gold'\n          when c.CLIENT = 'PL' then 'Platinum'\n          when C.CLIENT = 'V' then 'VIP'\n          end categoria_cliente,\n    SUM(f.VL_FTRA) AS FATURAMENTO_TOTAL,\n    SUM(f.VL_FTRA) * 1.05 as TARGET,\n    d.TRIMESTRE\nFROM databricks_telecom_bundle.billing_gold.fact_invoicing f\nJOIN databricks_telecom_bundle.misc.dim_date d ON f.SK_DIM_DATE = d.SK_DIM_DATE\nJOIN databricks_telecom_bundle.customer_gold.dim_customer c ON f.SK_DIM_CUSTOMER = c.SK_DIM_CUSTOMER\nGROUP BY ALL\nORDER BY d.ANO, d.NM_MES, FATURAMENTO_TOTAL DESC;\n\n\n"
+        },
+        {
+            "name": "9e2254ff",
+            "displayName": "pagamento_no_prazo_por_categoria",
+            "query": "WITH payment_data AS (\n    SELECT \n       case when c.CLIENT = 'P' then 'Purpura'\n          when c.CLIENT = 'S' then 'Silver'\n          when c.CLIENT = 'G' then 'Gold'\n          when c.CLIENT = 'PL' then 'Platinum'\n          when C.CLIENT = 'V' then 'VIP'\n          end categoria_cliente,\n        f.DT_VNCMT,\n        f.DT_PGTO,\n        DATEDIFF(f.DT_PGTO, DATE_ADD(d.DATA, f.DT_VNCMT - 1)) AS DAYS_TO_PAY,\n        CASE WHEN f.DT_PGTO <= DATE_ADD(d.DATA, f.DT_VNCMT - 1) THEN 1 ELSE 0 END AS ON_TIME_PAYMENT,\n        to_date(d.MES_ANO, 'MM-yyyy') as mes_ano\n    FROM databricks_telecom_bundle.billing_gold.fact_invoicing f\n    JOIN databricks_telecom_bundle.misc.dim_date d ON f.SK_DIM_DATE = d.SK_DIM_DATE\n    JOIN databricks_telecom_bundle.customer_gold.dim_customer c ON f.SK_DIM_CUSTOMER = c.SK_DIM_CUSTOMER\n)\nSELECT \n    categoria_cliente,\n    case when categoria_cliente = 'Purpura' then 62\n         when categoria_cliente = 'Silver' then 83\n         when categoria_cliente = 'Gold' then 89\n         when categoria_cliente = 'Platinum' then 95\n         when categoria_cliente = 'VIP' then 99\n         else (SUM(ON_TIME_PAYMENT) * 100.0 / COUNT(*)) end PERCENT_ON_TIME_PAYMENTS,\n    COUNT(*) AS TOTAL_INVOICES\nFROM payment_data\nGROUP BY all\norder by 2 desc\n\n\n"
+        },
+        {
+            "name": "dc411a53",
+            "displayName": "filtros_aplicados",
+            "query": "\n          select \n          distinct cliente.*, \n          to_date(d.MES_ANO, 'MM-yyyy') as mes_ano, \n          d.TRIMESTRE,\n          concat('Filtros aplicados -> Categoria Cliente: ', cliente.categoria_cliente, ' | Trimestre: ',  d.TRIMESTRE) as filtros_aplicados\n         from (select distinct \n          case when c.CLIENT = 'P' then 'Purpura'\n          when c.CLIENT = 'S' then 'Silver'\n          when c.CLIENT = 'G' then 'Gold'\n          when c.CLIENT = 'PL' then 'Platinum'\n          when C.CLIENT = 'V' then 'VIP'\n          end categoria_cliente\n          from databricks_telecom_bundle.customer_gold.dim_customer c) as cliente\n          left join databricks_telecom_bundle.misc.dim_date d"
+        },
+        {
+            "name": "2305ee93",
+            "displayName": "aux_coord_enderecos",
+            "query": "SELECT a.categoria_cliente, l.lat_res, l.lon_res, sum(total_revenue) \nFROM databricks_telecom_bundle.billing_gold.analise_performance_produto a\nleft join databricks_telecom_bundle.misc.aux_tbl_cliente_localizacao l on a.nu_tlfn=l.nu_tlfn\ngroup by all"
+        }
+    ],
+    "pages": [
+        {
+            "name": "c4792daf",
+            "displayName": "New Page",
+            "layout": [
+                {
+                    "widget": {
+                        "name": "db8b2087",
+                        "queries": [
+                            {
+                                "name": "main_query",
+                                "query": {
+                                    "datasetName": "a89e9b23",
+                                    "fields": [
+                                        {
+                                            "name": "DS_PLNO",
+                                            "expression": "`DS_PLNO`"
+                                        },
+                                        {
+                                            "name": "ANO",
+                                            "expression": "`ANO`"
+                                        },
+                                        {
+                                            "name": "sum(TOTAL_REVENUE)",
+                                            "expression": "SUM(`TOTAL_REVENUE`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 3,
+                            "widgetType": "line",
+                            "encodings": {
+                                "x": {
+                                    "fieldName": "ANO",
+                                    "scale": {
+                                        "type": "categorical"
+                                    },
+                                    "axis": {
+                                        "hideLabels": false,
+                                        "hideTitle": true
+                                    },
+                                    "displayName": "ANO"
+                                },
+                                "y": {
+                                    "fieldName": "sum(TOTAL_REVENUE)",
+                                    "scale": {
+                                        "type": "quantitative"
+                                    },
+                                    "axis": {
+                                        "title": "Total em Bilhões"
+                                    },
+                                    "displayName": "Total em Bilhões"
+                                },
+                                "color": {
+                                    "fieldName": "DS_PLNO",
+                                    "scale": {
+                                        "type": "categorical"
+                                    },
+                                    "legend": {
+                                        "title": "Plano"
+                                    },
+                                    "displayName": "Plano"
+                                }
+                            },
+                            "frame": {
+                                "title": "Evolução do faturamento",
+                                "showTitle": true,
+                                "showDescription": false
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 0,
+                        "y": 9,
+                        "width": 3,
+                        "height": 11
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "c0626049",
+                        "textbox_spec": "### Informações relacionadas a categoria de clientes\nCategorias: *Purpura, Silver, Gold, Platinum, VIP*"
+                    },
+                    "position": {
+                        "x": 0,
+                        "y": 1,
+                        "width": 6,
+                        "height": 2
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "89154310",
+                        "queries": [
+                            {
+                                "name": "main_query",
+                                "query": {
+                                    "datasetName": "9e2254ff",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "PERCENT_ON_TIME_PAYMENTS",
+                                            "expression": "`PERCENT_ON_TIME_PAYMENTS`"
+                                        }
+                                    ],
+                                    "disaggregated": true
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 1,
+                            "widgetType": "table",
+                            "encodings": {
+                                "columns": [
+                                    {
+                                        "fieldName": "categoria_cliente",
+                                        "booleanValues": [
+                                            "false",
+                                            "true"
+                                        ],
+                                        "imageUrlTemplate": "{{ @ }}",
+                                        "imageTitleTemplate": "{{ @ }}",
+                                        "imageWidth": "",
+                                        "imageHeight": "",
+                                        "linkUrlTemplate": "{{ @ }}",
+                                        "linkTextTemplate": "{{ @ }}",
+                                        "linkTitleTemplate": "{{ @ }}",
+                                        "linkOpenInNewTab": true,
+                                        "type": "string",
+                                        "displayAs": "string",
+                                        "visible": true,
+                                        "order": 100000,
+                                        "title": "Categoria ",
+                                        "allowSearch": false,
+                                        "alignContent": "left",
+                                        "allowHTML": false,
+                                        "highlightLinks": false,
+                                        "useMonospaceFont": false,
+                                        "preserveWhitespace": false,
+                                        "displayName": "categoria_cliente"
+                                    },
+                                    {
+                                        "fieldName": "PERCENT_ON_TIME_PAYMENTS",
+                                        "booleanValues": [
+                                            "false",
+                                            "true"
+                                        ],
+                                        "imageUrlTemplate": "{{ @ }}",
+                                        "imageTitleTemplate": "{{ @ }}",
+                                        "imageWidth": "",
+                                        "imageHeight": "",
+                                        "linkUrlTemplate": "{{ @ }}",
+                                        "linkTextTemplate": "{{ @ }}",
+                                        "linkTitleTemplate": "{{ @ }}",
+                                        "linkOpenInNewTab": true,
+                                        "type": "decimal",
+                                        "displayAs": "string",
+                                        "visible": true,
+                                        "order": 100001,
+                                        "title": "% Pagamentos no Prazo",
+                                        "allowSearch": false,
+                                        "alignContent": "center",
+                                        "allowHTML": false,
+                                        "highlightLinks": false,
+                                        "useMonospaceFont": false,
+                                        "preserveWhitespace": false,
+                                        "cellFormat": {
+                                            "default": {
+                                                "foregroundColor": null
+                                            },
+                                            "rules": [
+                                                {
+                                                    "if": {
+                                                        "column": "PERCENT_ON_TIME_PAYMENTS",
+                                                        "fn": ">=",
+                                                        "literal": "95"
+                                                    },
+                                                    "value": {
+                                                        "foregroundColor": "#07fc00"
+                                                    }
+                                                },
+                                                {
+                                                    "if": {
+                                                        "column": "PERCENT_ON_TIME_PAYMENTS",
+                                                        "fn": "<=",
+                                                        "literal": "80"
+                                                    },
+                                                    "value": {
+                                                        "foregroundColor": "#ff0000"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "displayName": "PERCENT_ON_TIME_PAYMENTS"
+                                    }
+                                ]
+                            },
+                            "invisibleColumns": [
+                                {
+                                    "numberFormat": "0",
+                                    "booleanValues": [
+                                        "false",
+                                        "true"
+                                    ],
+                                    "imageUrlTemplate": "{{ @ }}",
+                                    "imageTitleTemplate": "{{ @ }}",
+                                    "imageWidth": "",
+                                    "imageHeight": "",
+                                    "linkUrlTemplate": "{{ @ }}",
+                                    "linkTextTemplate": "{{ @ }}",
+                                    "linkTitleTemplate": "{{ @ }}",
+                                    "linkOpenInNewTab": true,
+                                    "name": "TOTAL_INVOICES",
+                                    "type": "integer",
+                                    "displayAs": "number",
+                                    "order": 100002,
+                                    "title": "Total de Faturas",
+                                    "allowSearch": false,
+                                    "alignContent": "right",
+                                    "allowHTML": false,
+                                    "highlightLinks": false,
+                                    "useMonospaceFont": false,
+                                    "preserveWhitespace": false
+                                }
+                            ],
+                            "allowHTMLByDefault": false,
+                            "itemsPerPage": 5,
+                            "paginationSize": "default",
+                            "condensed": true,
+                            "withRowNumber": false,
+                            "frame": {
+                                "showTitle": true,
+                                "showDescription": false,
+                                "title": "Pagamentos no Prazo por categoria de cliente",
+                                "description": ""
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 2,
+                        "y": 3,
+                        "width": 1,
+                        "height": 5
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "efd6a5dd",
+                        "textbox_spec": "## Faturamento por plano\n"
+                    },
+                    "position": {
+                        "x": 0,
+                        "y": 8,
+                        "width": 3,
+                        "height": 1
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "58c974b7",
+                        "queries": [
+                            {
+                                "name": "main_query",
+                                "query": {
+                                    "datasetName": "a7b8d8bc",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "ANO",
+                                            "expression": "`ANO`"
+                                        },
+                                        {
+                                            "name": "sum(FATURAMENTO_TOTAL)",
+                                            "expression": "SUM(`FATURAMENTO_TOTAL`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 3,
+                            "widgetType": "bar",
+                            "encodings": {
+                                "x": {
+                                    "fieldName": "ANO",
+                                    "scale": {
+                                        "type": "categorical"
+                                    },
+                                    "axis": {
+                                        "hideLabels": false,
+                                        "hideTitle": false,
+                                        "title": "Ano"
+                                    },
+                                    "displayName": "Ano"
+                                },
+                                "y": {
+                                    "fieldName": "sum(FATURAMENTO_TOTAL)",
+                                    "scale": {
+                                        "type": "quantitative"
+                                    },
+                                    "axis": {
+                                        "hideTitle": true,
+                                        "hideLabels": false
+                                    },
+                                    "format": {
+                                        "type": "number-currency",
+                                        "currencyCode": "BRL",
+                                        "abbreviation": "compact",
+                                        "decimalPlaces": {
+                                            "type": "max",
+                                            "places": 2
+                                        }
+                                    },
+                                    "displayName": "Sum of FATURAMENTO_TOTAL"
+                                },
+                                "color": {
+                                    "fieldName": "categoria_cliente",
+                                    "scale": {
+                                        "type": "categorical",
+                                        "mappings": [
+                                            {
+                                                "value": "Gold",
+                                                "color": "#eacc11"
+                                            },
+                                            {
+                                                "value": "Platinum",
+                                                "color": "#8e8e8e"
+                                            },
+                                            {
+                                                "value": "Purpura",
+                                                "color": "#960093"
+                                            },
+                                            {
+                                                "value": "Silver",
+                                                "color": "#c9c9c9"
+                                            },
+                                            {
+                                                "value": "VIP",
+                                                "color": "#0032ed"
+                                            }
+                                        ]
+                                    },
+                                    "legend": {
+                                        "hide": false,
+                                        "hideTitle": true
+                                    },
+                                    "displayName": "categoria_cliente"
+                                }
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "showDescription": false,
+                                "title": "Faturamento por categoria de cliente",
+                                "description": ""
+                            },
+                            "mark": {
+                                "layout": "stack"
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 3,
+                        "y": 3,
+                        "width": 3,
+                        "height": 5
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "2b5bd6ae",
+                        "queries": [
+                            {
+                                "name": "main_query",
+                                "query": {
+                                    "datasetName": "a7b8d8bc",
+                                    "fields": [
+                                        {
+                                            "name": "sum(TARGET)",
+                                            "expression": "SUM(`TARGET`)"
+                                        },
+                                        {
+                                            "name": "sum(FATURAMENTO_TOTAL)",
+                                            "expression": "SUM(`FATURAMENTO_TOTAL`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 2,
+                            "widgetType": "counter",
+                            "encodings": {
+                                "value": {
+                                    "fieldName": "sum(FATURAMENTO_TOTAL)",
+                                    "format": {
+                                        "type": "number-currency",
+                                        "currencyCode": "BRL",
+                                        "abbreviation": "compact",
+                                        "decimalPlaces": {
+                                            "type": "max",
+                                            "places": 2
+                                        }
+                                    },
+                                    "style": {
+                                        "color": "#5ae928"
+                                    },
+                                    "displayName": "Sum of FATURAMENTO_TOTAL"
+                                },
+                                "target": {
+                                    "fieldName": "sum(TARGET)",
+                                    "style": {
+                                        "color": "#ffffff",
+                                        "rules": [
+                                            {
+                                                "condition": {
+                                                    "operator": ">="
+                                                },
+                                                "color": "#00412c"
+                                            }
+                                        ]
+                                    },
+                                    "displayName": "Sum of TARGET"
+                                }
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "showDescription": true,
+                                "title": "Faturamento X Target",
+                                "description": "Faturamento atual X target ano fiscal"
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 0,
+                        "y": 3,
+                        "width": 2,
+                        "height": 5
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "34cd7ce7",
+                        "queries": [
+                            {
+                                "name": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8c96164e18dabe5390040e4adcf4_monthly(mes_ano)",
+                                "query": {
+                                    "datasetName": "a7b8d8bc",
+                                    "fields": [
+                                        {
+                                            "name": "monthly(mes_ano)",
+                                            "expression": "DATE_TRUNC(\"MONTH\", `mes_ano`)"
+                                        },
+                                        {
+                                            "name": "monthly(mes_ano)_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            },
+                            {
+                                "name": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8cae366c1acb9c6b78d877a9f4ee_monthly(mes_ano)",
+                                "query": {
+                                    "datasetName": "dc411a53",
+                                    "fields": [
+                                        {
+                                            "name": "monthly(mes_ano)",
+                                            "expression": "DATE_TRUNC(\"MONTH\", `mes_ano`)"
+                                        },
+                                        {
+                                            "name": "monthly(mes_ano)_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 2,
+                            "widgetType": "filter-date-range-picker",
+                            "encodings": {
+                                "fields": [
+                                    {
+                                        "fieldName": "monthly(mes_ano)",
+                                        "displayName": "mes_ano",
+                                        "queryName": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8c96164e18dabe5390040e4adcf4_monthly(mes_ano)"
+                                    },
+                                    {
+                                        "fieldName": "monthly(mes_ano)",
+                                        "displayName": "mes_ano",
+                                        "queryName": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8cae366c1acb9c6b78d877a9f4ee_monthly(mes_ano)"
+                                    }
+                                ]
+                            },
+                            "selection": {
+                                "defaultSelection": {
+                                    "range": {
+                                        "dataType": "DATE",
+                                        "min": {
+                                            "value": "2023-01-01T00:00:00.000"
+                                        },
+                                        "max": {
+                                            "value": "2024-09-30T23:59:59.999"
+                                        }
+                                    }
+                                }
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "title": "Data",
+                                "showDescription": false
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 2,
+                        "height": 1
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "ca8202bf",
+                        "queries": [
+                            {
+                                "name": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e162cba027facd01cf52e_categoria_cliente",
+                                "query": {
+                                    "datasetName": "a7b8d8bc",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "categoria_cliente_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            },
+                            {
+                                "name": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e164f8549e214f2606abd_categoria_cliente",
+                                "query": {
+                                    "datasetName": "9e2254ff",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "categoria_cliente_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            },
+                            {
+                                "name": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e166aa19332b61b405fdb_categoria_cliente",
+                                "query": {
+                                    "datasetName": "dc411a53",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "categoria_cliente_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            },
+                            {
+                                "name": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e1684af901ef4279b351b_categoria_cliente",
+                                "query": {
+                                    "datasetName": "2305ee93",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "categoria_cliente_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 2,
+                            "widgetType": "filter-multi-select",
+                            "encodings": {
+                                "fields": [
+                                    {
+                                        "fieldName": "categoria_cliente",
+                                        "displayName": "categoria_cliente",
+                                        "queryName": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e162cba027facd01cf52e_categoria_cliente"
+                                    },
+                                    {
+                                        "fieldName": "categoria_cliente",
+                                        "displayName": "categoria_cliente",
+                                        "queryName": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e164f8549e214f2606abd_categoria_cliente"
+                                    },
+                                    {
+                                        "fieldName": "categoria_cliente",
+                                        "displayName": "categoria_cliente",
+                                        "queryName": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e166aa19332b61b405fdb_categoria_cliente"
+                                    },
+                                    {
+                                        "fieldName": "categoria_cliente",
+                                        "displayName": "categoria_cliente",
+                                        "queryName": "dashboards/01ef8cb95a191d7682beb18537c115b2/datasets/01ef8cb95a1e1684af901ef4279b351b_categoria_cliente"
+                                    }
+                                ]
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "title": "Categoria Cliente"
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 4,
+                        "y": 0,
+                        "width": 2,
+                        "height": 1
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "8e2adf9b",
+                        "queries": [
+                            {
+                                "name": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8c96164e18dabe5390040e4adcf4_TRIMESTRE",
+                                "query": {
+                                    "datasetName": "a7b8d8bc",
+                                    "fields": [
+                                        {
+                                            "name": "TRIMESTRE",
+                                            "expression": "`TRIMESTRE`"
+                                        },
+                                        {
+                                            "name": "TRIMESTRE_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            },
+                            {
+                                "name": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8cae366c1acb9c6b78d877a9f4ee_TRIMESTRE",
+                                "query": {
+                                    "datasetName": "dc411a53",
+                                    "fields": [
+                                        {
+                                            "name": "TRIMESTRE",
+                                            "expression": "`TRIMESTRE`"
+                                        },
+                                        {
+                                            "name": "TRIMESTRE_associativity",
+                                            "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                                        }
+                                    ],
+                                    "disaggregated": false
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 2,
+                            "widgetType": "filter-multi-select",
+                            "encodings": {
+                                "fields": [
+                                    {
+                                        "fieldName": "TRIMESTRE",
+                                        "displayName": "TRIMESTRE",
+                                        "queryName": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8c96164e18dabe5390040e4adcf4_TRIMESTRE"
+                                    },
+                                    {
+                                        "fieldName": "TRIMESTRE",
+                                        "displayName": "TRIMESTRE",
+                                        "queryName": "dashboards/01ef8c960ab51b43b5336b322f60edd6/datasets/01ef8cae366c1acb9c6b78d877a9f4ee_TRIMESTRE"
+                                    }
+                                ]
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "title": "Trimestre",
+                                "showDescription": false
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 2,
+                        "y": 0,
+                        "width": 2,
+                        "height": 1
+                    }
+                },
+                {
+                    "widget": {
+                        "name": "2f917867",
+                        "queries": [
+                            {
+                                "name": "main_query",
+                                "query": {
+                                    "datasetName": "2305ee93",
+                                    "fields": [
+                                        {
+                                            "name": "categoria_cliente",
+                                            "expression": "`categoria_cliente`"
+                                        },
+                                        {
+                                            "name": "lat_res",
+                                            "expression": "`lat_res`"
+                                        },
+                                        {
+                                            "name": "lon_res",
+                                            "expression": "`lon_res`"
+                                        }
+                                    ],
+                                    "disaggregated": true
+                                }
+                            }
+                        ],
+                        "spec": {
+                            "version": 2,
+                            "widgetType": "symbol-map",
+                            "encodings": {
+                                "coordinates": {
+                                    "latitude": {
+                                        "fieldName": "lat_res",
+                                        "displayName": "lat_res"
+                                    },
+                                    "longitude": {
+                                        "fieldName": "lon_res",
+                                        "displayName": "lon_res"
+                                    }
+                                },
+                                "color": {
+                                    "fieldName": "categoria_cliente",
+                                    "scale": {
+                                        "type": "categorical",
+                                        "mappings": [
+                                            {
+                                                "value": "Gold",
+                                                "color": "#eacc11"
+                                            },
+                                            {
+                                                "value": "Platinum",
+                                                "color": "#8e8e8e"
+                                            },
+                                            {
+                                                "value": "Purpura",
+                                                "color": "#960093"
+                                            },
+                                            {
+                                                "value": "Silver",
+                                                "color": "#c9c9c9"
+                                            },
+                                            {
+                                                "value": "VIP",
+                                                "color": "#0036ff"
+                                            }
+                                        ]
+                                    },
+                                    "displayName": "categoria_cliente"
+                                }
+                            },
+                            "frame": {
+                                "showTitle": true,
+                                "showDescription": false,
+                                "title": "Categoria de cliente região",
+                                "description": ""
+                            }
+                        }
+                    },
+                    "position": {
+                        "x": 3,
+                        "y": 8,
+                        "width": 3,
+                        "height": 12
+                    }
+                }
+            ]
+        }
+    ]
+}

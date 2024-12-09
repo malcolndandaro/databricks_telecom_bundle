@@ -1,0 +1,71 @@
+resources:
+  jobs:
+    Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento:
+      name: "[Data Warehousing][1] Gera dados de produtos, serviços e faturamento"
+      tasks:
+        - task_key: product_subscriptions
+          notebook_task:
+            notebook_path: ../tables/raw_tables/product_subscriptions.py
+            base_parameters:
+              p_schema: customer_bronze
+            source: WORKSPACE
+          job_cluster_key: generate_synthetic_data_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1
+        - task_key: sva_subscriptions
+          depends_on:
+            - task_key: product_subscriptions
+          notebook_task:
+            notebook_path: ../tables/raw_tables/sva_subscriptions.py
+            base_parameters:
+              p_schema: customer_bronze
+            source: WORKSPACE
+          job_cluster_key: generate_synthetic_data_cluster
+        - task_key: invoicing
+          depends_on:
+            - task_key: sva_subscriptions
+          notebook_task:
+            notebook_path: ../tables/raw_tables/invoicing.py
+            base_parameters:
+              p_schema: billing_bronze
+            source: WORKSPACE
+          job_cluster_key: generate_synthetic_data_cluster
+      job_clusters:
+        - job_cluster_key: generate_synthetic_data_cluster
+          new_cluster:
+            cluster_name: ""
+            spark_version: 15.4.x-scala2.12
+            azure_attributes:
+              first_on_demand: 1
+              availability: ON_DEMAND_AZURE
+              spot_bid_max_price: -1
+            node_type_id: Standard_D32ads_v5
+            custom_tags:
+              domain: misc
+              cost_center: "100.001"
+              project: geral
+              env: prod
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: true
+            #policy_id: "0013174633674821"
+            data_security_mode: SINGLE_USER
+            runtime_engine: PHOTON
+            num_workers: 3
+      tags:
+        cost_center: "100.001"
+        domain: misc
+        env: prod
+        project: geral
+        uc_name: Geração de Dados
+        uc_step: "0"
+      queue:
+        enabled: true
+      parameters:
+        - name: p_catalog
+          default: ${var.catalog_name}
+        - name: p_data_schema
+          default: ingestion

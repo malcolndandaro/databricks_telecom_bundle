@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    pipeline_dim_date:
+      name: dim_date
+      configuration:
+        confs.p_catalog: ${var.catalog_name}
+      libraries:
+        - notebook:
+            path: ../dimensions/dim_date.py
+      target: misc
+      development: true
+      photon: true
+      channel: PREVIEW
+      catalog: ${var.catalog_name}
+      serverless: true
