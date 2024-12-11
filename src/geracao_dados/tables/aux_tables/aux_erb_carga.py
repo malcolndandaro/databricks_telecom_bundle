@@ -1,6 +1,6 @@
 # Databricks notebook source
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
-catalog_name        = dbutils.widgets.get("catalog_name")
+dbutils.widgets.text("p_catalog","dev", "Nome do catálogo")
+catalog_name        = dbutils.widgets.get("p_catalog")
 
 # COMMAND ----------
 

@@ -3,7 +3,22 @@ resources:
     Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados:
       name: "[Geração de Dados] [0] Gera tabelas que auxiliam a geração de dados"
       tasks:
+        - task_key: download_erb_Jul2024
+          notebook_task:
+            notebook_path:  ../tables/aux_tables/aux_download_erb.py
+            base_parameters:
+              p_catalog: ${var.catalog_name}
+              p_volume: raw_data
+            source: WORKSPACE
+          job_cluster_key: 00_setup_data_generation_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1
         - task_key: datalake_structure_uc_volumes
+          depends_on:
+            - task_key: download_erb_Jul2024
           notebook_task:
             notebook_path:  ../volumes/datalake_and_UC_volumes.py
             base_parameters:
