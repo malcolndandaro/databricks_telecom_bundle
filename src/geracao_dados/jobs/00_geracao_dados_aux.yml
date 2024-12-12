@@ -3,7 +3,37 @@ resources:
     Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados:
       name: "[Geração de Dados] [0] Gera tabelas que auxiliam a geração de dados"
       tasks:
+        - task_key: download_erb_Jul2024
+          notebook_task:
+            notebook_path:  ../tables/aux_tables/aux_download_erb.py
+            base_parameters:
+              p_catalog: ${var.catalog_name}
+              p_volume: raw_data
+            source: WORKSPACE
+          job_cluster_key: 00_setup_data_generation_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1
+        - task_key: carga_erb
+          depends_on:
+            - task_key: download_erb_Jul2024
+          notebook_task:
+            notebook_path:  ../tables/aux_tables/aux_erb_carga.py
+            base_parameters:
+              p_catalog: ${var.catalog_name}
+              p_volume: raw_data
+            source: WORKSPACE
+          job_cluster_key: 00_setup_data_generation_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1
         - task_key: datalake_structure_uc_volumes
+          depends_on:
+            - task_key: carga_erb
           notebook_task:
             notebook_path:  ../volumes/datalake_and_UC_volumes.py
             base_parameters:
@@ -15,7 +45,7 @@ resources:
             - pypi:
                 package: Faker==28.4.1
             - pypi:
-                package: dbldatagen==0.4.0.post1
+                package: dbldatagen==0.4.0.post1        
         - task_key: aux_tables_-_municipios
           depends_on:
             - task_key: datalake_structure_uc_volumes
@@ -34,6 +64,34 @@ resources:
               p_schema: misc
             source: WORKSPACE
           job_cluster_key: 00_setup_data_generation_cluster
+        - task_key: aux_enderecos
+          depends_on:           
+            - task_key: aux_functions_-_address
+          notebook_task:
+            notebook_path:  ../tables/aux_tables/aux_enderecos.py
+            base_parameters:
+              p_catalog: ${var.catalog_name}              
+            source: WORKSPACE
+          job_cluster_key: 00_setup_data_generation_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1
+        - task_key: aux_tbl_index_erbs
+          depends_on:
+            - task_key: aux_enderecos
+          notebook_task:
+            notebook_path:  ../tables/aux_tables/aux_tbl_index_erbs.py
+            base_parameters:
+              p_catalog: ${var.catalog_name}              
+            source: WORKSPACE
+          job_cluster_key: 00_setup_data_generation_cluster
+          libraries:
+            - pypi:
+                package: Faker==28.4.1
+            - pypi:
+                package: dbldatagen==0.4.0.post1 
         - task_key: aux_tables_-_produtos
           depends_on:
             - task_key: datalake_structure_uc_volumes
@@ -54,9 +112,9 @@ resources:
           job_cluster_key: 00_setup_data_generation_cluster
         - task_key: aux_tables_-_clientes
           depends_on:
-            - task_key: aux_functions_-_address
             - task_key: aux_tables_-_produtos
             - task_key: aux_tables_-_servicos
+            - task_key: aux_tbl_index_erbs
           notebook_task:
             notebook_path: ../tables/aux_tables/aux_tbl_clientes.py
             base_parameters:

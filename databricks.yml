@@ -1,8 +1,17 @@
+# yaml-language-server: $schema=bundle_config_schema.json
 # This is a Databricks asset bundle definition for databricks_telecom_bundle.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
   name: databricks_telecom_bundle
+  
 
+resources:
+  volumes:
+    erb_volume:
+      catalog_name: ${var.catalog_name}
+      name: erb_dataset
+      schema_name: misc
+  
 include:
   - resources/*.yml
   - src/geracao_dados/jobs/*.yml
@@ -12,14 +21,21 @@ include:
   - src/data_warehousing/dashboards/*.yml
   - src/data_warehousing/jobs/*.yml
   - src/bundle_orchestrator/jobs/*.yml
-  
+
 variables:
   catalog_name:
     description: Catalogo utilizado para criar os objetos
-    default: databricks_telecom_bundle
+    default: ctakamiya_bundle
+  
+  full_email:
+    description: "The current user's email"
+    default: ${workspace.current_user.userName}
+  
+  my_user_name:
+    description: "The current user's name (before @)"
+    default: ${var.full_email.split("@")[0]}
 
-
-
+  
 targets:
   dev:
     # The default target uses 'mode: development' to create a development copy.
@@ -36,9 +52,9 @@ targets:
     workspace:
       host: https://adb-4562026214062884.4.azuredatabricks.net
       # We explicitly specify /Workspace/Users/malcoln.dandaro@databricks.com to make sure we only have a single copy.
-      root_path: /Workspace/Users/malcoln.dandaro@databricks.com/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Workspace/Users/${full_email}/.bundle/${bundle.name}/${bundle.target}
     permissions:
-      - user_name: malcoln.dandaro@databricks.com
+      - user_name: ${full_email}
         level: CAN_MANAGE
     run_as:
-      user_name: malcoln.dandaro@databricks.com
+      user_name: ${full_email}

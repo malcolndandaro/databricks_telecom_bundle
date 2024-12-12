@@ -1,6 +1,6 @@
 # Databricks notebook source
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
-catalog_name        = dbutils.widgets.get("catalog_name")
+dbutils.widgets.text("p_catalog","dev", "Nome do catálogo")
+catalog_name        = dbutils.widgets.get("p_catalog")
 
 # COMMAND ----------
 
@@ -51,8 +51,9 @@ schema = StructType([
     StructField("4G", StringType(), True),      
     StructField("5G", StringType(), True),
 ])
+local_dir = f"/Volumes/{catalog_name}/misc/aux_files/ERB-Jul24"
 
-df_erb = spark.read.csv(f"file:///Workspace/Shared/dataset_erb/ERB-Jul24.csv", header=True, sep=";", schema=schema)
+df_erb = spark.read.parquet(local_dir)
 
 # COMMAND ----------
 

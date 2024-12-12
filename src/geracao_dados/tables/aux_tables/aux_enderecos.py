@@ -17,7 +17,7 @@ from pyspark.sql.functions import col
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("p_catalog","dev", "Nome do catálogo")
 dbutils.widgets.text("num_address","40", "Numero de endereços por ERB")
 dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
 
@@ -26,7 +26,7 @@ dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
 
 num_address_per_erb = int(dbutils.widgets.get("num_address"))  
 max_distance_erb    = int(dbutils.widgets.get("max_distance_erb")) 
-catalog_name        = dbutils.widgets.get("catalog_name")
+catalog_name        = dbutils.widgets.get("p_catalog")
 
 # COMMAND ----------
 
