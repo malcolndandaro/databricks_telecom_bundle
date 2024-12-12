@@ -88,7 +88,7 @@ address_df.write.mode('overwrite').saveAsTable(f'{catalog_name}.misc.aux_enderec
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC select * from IDENTIFIER(:catalog_name || '.misc.aux_enderecos_grp') limit 100
+# MAGIC select * from IDENTIFIER(:p_catalog || '.misc.aux_enderecos_grp') limit 100
 
 # COMMAND ----------
 
@@ -172,7 +172,7 @@ for i in range(k):
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC select * from IDENTIFIER(:catalog_name || '.misc.aux_erb_coord') where NumEstacao= '1002298137'
+# MAGIC select * from IDENTIFIER(:p_catalog || '.misc.aux_erb_coord') where NumEstacao= '1002298137'
 
 # COMMAND ----------
 
