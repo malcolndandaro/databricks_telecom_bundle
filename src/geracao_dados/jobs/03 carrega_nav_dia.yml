@@ -1,0 +1,28 @@
+resources:
+  jobs:
+    Navegação_3_Carrega_Navegação_Dia:
+      name: "[Navegação][3] Carrega Navegação Dia"
+      tasks:
+        - task_key: Carrega_Navegacao_Dia
+          for_each_task:
+            inputs: '["2024-11-01"]'
+            concurrency: 1
+            task:
+              task_key: Carrega_Navegacao_Dia_iteration
+              sql_task:
+                file:
+                  path: ../tables/raw_tables/GeraNavegacaoDia.sql
+                  source: WORKSPACE
+                parameters:
+                  catalog_name: ${var.catalog_name}
+                  date_param: "{{input}}"
+                warehouse_id: ${var.antenna_warehouse_id}                
+      tags:
+        cost_center: "400.002"
+        domain: resource
+        env: prod
+        project: microsegmentacao
+        uc_name: Navegação
+        uc_step: "3"
+      queue:
+        enabled: true

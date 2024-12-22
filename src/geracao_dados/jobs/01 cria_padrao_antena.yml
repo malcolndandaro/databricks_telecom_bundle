@@ -1,0 +1,81 @@
+resources:
+  jobs:
+    Antena_1_Cria_Padrao_Antena:
+      name: "[Antena][1] Cria Padrao Antena"
+      tasks:
+        - task_key: cria_padrao_antena
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01a - base - Antena - Casa.py            
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+              amostra: "False"
+            source: WORKSPACE
+          job_cluster_key: PadraoAntena
+        - task_key: cria_padrao_antena2
+          depends_on:
+            - task_key: cria_padrao_antena
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01b - base - Antena -
+              Deslocamento Trabalho.py  
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+            source: WORKSPACE
+          job_cluster_key: PadraoAntena
+        - task_key: cria_padrao_antena3
+          depends_on:
+            - task_key: cria_padrao_antena2
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01c - base - Antena - Trabalho.py  
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+            source: WORKSPACE
+          job_cluster_key: PadraoAntena
+        - task_key: cria_padrao_antena4
+          depends_on:
+            - task_key: cria_padrao_antena3
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01d - base - Antena - Retorno
+              para Casa.py  
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+            source: WORKSPACE
+          job_cluster_key: PadraoAntena
+        - task_key: cria_padrao_antena5
+          depends_on:
+            - task_key: cria_padrao_antena4
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01e - base - Antena - Casa - Fim
+              do dia.py  
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+            source: WORKSPACE
+          job_cluster_key: PadraoAntena
+      job_clusters:
+        - job_cluster_key: PadraoAntena
+          new_cluster:
+            cluster_name: ""
+            spark_version: 15.4.x-cpu-ml-scala2.12
+            azure_attributes:
+              first_on_demand: 1
+              availability: ON_DEMAND_AZURE
+              spot_bid_max_price: -1
+            node_type_id: Standard_D4ds_v5
+            custom_tags:
+              domain: resource
+              cost_center: "400.002"
+              project: microsegmentacao
+              env: prod
+            enable_elastic_disk: true
+            #policy_id: 00043A82FE13964D
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            num_workers: 4
+      tags:
+        cost_center: "400.002"
+        domain: resource
+        env: prod
+        project: microsegmentacao
+        uc_name: Antena
+        uc_step: "1"
+      queue:
+        enabled: true

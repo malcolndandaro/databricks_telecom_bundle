@@ -1,0 +1,30 @@
+resources:
+  jobs:
+    Microssegmentacao_4_Carrega_Feature_Store_Interesse:
+      name: "[Microssegmentacao][4] Carrega Feature Store - Interesse"
+      description: |-
+        Carrega Feature Store - Interesse
+        Baseado nas informações de antenas/navegação com geolocalização
+      tasks:
+        - task_key: Carrega_Feature_Store_Navegacao
+          for_each_task:
+            inputs: '["2024-11-01"]'
+            task:
+              task_key: Carrega_Feature_Store_Navegacao_iteration
+              sql_task:
+                file:
+                  path: ../features/Feature Store - Interesse.sql
+                  source: WORKSPACE
+                parameters:
+                  catalog_name: ${var.catalog_name}
+                  data_param: "{{input}}"                
+                warehouse_id: ${var.antenna_warehouse_id}
+      tags:
+        cost_center: "400.001"
+        domain: resource
+        env: prod
+        project: microsegmentacao
+        uc_name: Microssegmentação
+        uc_step: "4"
+      queue:
+        enabled: true
