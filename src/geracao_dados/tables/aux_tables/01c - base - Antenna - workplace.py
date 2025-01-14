@@ -35,12 +35,9 @@ catalog_name        = dbutils.widgets.get("catalog_name")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Carga dos trajetos dos clientes ao trabalho
+# MAGIC # Loading customer routes to work
 # MAGIC
-# MAGIC Carregando trajeto percorrido pelo cliente:
-# MAGIC https://adb-6120542968195864.4.azuredatabricks.net/?o=6120542968195864#notebook/316131127233238/command/316131127233243
-# MAGIC
-# MAGIC
+# MAGIC Loading routes traveled by users.
 
 # COMMAND ----------
 

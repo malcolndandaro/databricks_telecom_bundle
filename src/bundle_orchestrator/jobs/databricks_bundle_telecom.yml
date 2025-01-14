@@ -3,58 +3,78 @@ resources:
     databricks_bundle_telecom:
       name: databricks_bundle_telecom
       tasks:
-        - task_key: Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados
+        - task_key: Task_0_Generate_auxiliary_tables
           run_job_task:
-            job_id: ${resources.jobs.Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados.id}
-        - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
+            job_id: ${resources.jobs.Task_0_Generate_auxiliary_tables.id}
+        - task_key: Task_1_Generate_products_services_invoices
           run_job_task:
-            job_id: ${resources.jobs.Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento.id}
+            job_id: ${resources.jobs.Task_1_Generate_products_services_invoices.id}
           depends_on:
-            - task_key: Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados
-        - task_key: Ingestao_0_Gera_politicas_de_Cluster
+            - task_key: Task_0_Generate_auxiliary_tables  
+        - task_key: Task_2_Generate_Antenna_Pattern
           run_job_task:
-            job_id: ${resources.jobs.Ingestao_0_Gera_politicas_de_Cluster.id}
+            job_id: ${resources.jobs.Task_2_Generate_Antenna_Pattern.id}
           depends_on:
-            - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
-        - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions
+            - task_key: Task_1_Generate_products_services_invoices
+        - task_key: Task_3_Load_Antenna_Traffic
           run_job_task:
-            job_id: ${resources.jobs.Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions.id}
+            job_id: ${resources.jobs.Task_3_Load_Antenna_Traffic.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
-        - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions
+            - task_key: Task_2_Generate_Antenna_Pattern
+        - task_key: Task_4_Generate_Navigation_Pattern
           run_job_task:
-            job_id: ${resources.jobs.Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions.id}
+            job_id: ${resources.jobs.Task_4_Generate_Navigation_Pattern.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
-        - task_key: Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing
+            - task_key: Task_3_Load_Antenna_Traffic
+
+        - task_key: Task_5_Load_Navigation
           run_job_task:
-            job_id: ${resources.jobs.Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing.id}
+            job_id: ${resources.jobs.Task_5_Load_Navigation.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
-        - task_key: Data_Warehousing_1_Gera_Dimensoes
+            - task_key: Task_4_Generate_Navigation_Pattern
+
+        - task_key: Task_6_Bronze_Silver_Product_Subscription
           run_job_task:
-            job_id: ${resources.jobs.Data_Warehousing_1_Gera_Dimensoes.id}
+            job_id: ${resources.jobs.Task_6_Bronze_Silver_Product_Subscription.id}
           depends_on:
-            - task_key: Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing
-            - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions
-            - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions
-        - task_key: Data_Warehousing_2_Gera_Fato_Invoicing
+            - task_key: Task_5_Load_Navigation
+
+        - task_key: Task_7_bronze_silver_sva_subscriptions
           run_job_task:
-            job_id: ${resources.jobs.Data_Warehousing_2_Gera_Fato_Invoicing.id}
+            job_id: ${resources.jobs.Task_7_bronze_silver_sva_subscriptions.id}
           depends_on:
-            - task_key: Data_Warehousing_1_Gera_Dimensoes
-        - task_key: Data_Warehousing_2_Gera_Fato_Subscription
+            - task_key: Task_6_Bronze_Silver_Product_Subscription
+
+        - task_key: Task_8_Load_Feature_Store_Interest        
           run_job_task:
-            job_id: ${resources.jobs.Data_Warehousing_2_Gera_Fato_Subscription.id}
+            job_id: ${resources.jobs.Task_8_Load_Feature_Store_Interest.id}
           depends_on:
-            - task_key: Data_Warehousing_1_Gera_Dimensoes
-        - task_key: Data_Warehousing_3_Gera_Analise_performance_produto
+            - task_key: Task_7_bronze_silver_sva_subscriptions
+
+        - task_key: Task_9_Load_Feature_Store_Produto
           run_job_task:
-            job_id: ${resources.jobs.Data_Warehousing_3_Gera_Analise_performance_produto.id}
+            job_id: ${resources.jobs.Task_9_Load_Feature_Store_Produto.id}
           depends_on:
-            - task_key: Data_Warehousing_2_Gera_Fato_Invoicing
-        
-      
+            - task_key: Task_8_Load_Feature_Store_Interest
+
+        - task_key: Task_10_Colaborative_Filtering
+          run_job_task:
+            job_id: ${resources.jobs.Task_10_Colaborative_Filtering.id}
+          depends_on:
+            - task_key: Task_9_Load_Feature_Store_Produto
+
+        - task_key: Task_11_Clustering
+          run_job_task:
+            job_id: ${resources.jobs.Task_11_Clustering.id}
+          depends_on:
+            - task_key: Task_10_Colaborative_Filtering
+
+        - task_key: Task_12_Report_Interest
+          run_job_task:
+            job_id: ${resources.jobs.Task_12_Report_Interest.id}
+          depends_on:
+            - task_key: Task_11_Clustering
+
       queue:
         enabled: true
         

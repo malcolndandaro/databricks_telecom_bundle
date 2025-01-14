@@ -34,10 +34,9 @@ catalog_name        = dbutils.widgets.get("catalog_name")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Carregando trajetos salvos em 
+# MAGIC # Loading saved routes
 # MAGIC
-# MAGIC Carregando cliente e endereços gerado no notebook anterior:
-# MAGIC https://adb-6120542968195864.4.azuredatabricks.net/?o=6120542968195864#notebook/316131127233238/command/4448031269110787
+# MAGIC Loading users routes saved in the 01b - base - Antenna - commuting to the workplace.
 
 # COMMAND ----------
 
@@ -49,7 +48,7 @@ display(client_trajeto)
 
 # COMMAND ----------
 
-# DBTITLE 1,Invertendo o caminho e avançando
+# DBTITLE 1,Inverting the routes
 from pyspark.sql.functions import col, expr
 from pyspark.sql.types import ArrayType
 
@@ -76,12 +75,6 @@ for col_name in array_columns:
         expr(f"reverse({col_name})")
     )
 
-# ## Avançando o tempo
-# client_trajeto1 = client_trajeto1.withColumn("hora_saida", 
-#     from_unixtime(
-#         unix_timestamp(lit(data_ref)) + 
-#                       ((rand() * (arrival_time - departure_time) + departure_time) * 3600)).cast("timestamp")
-# )
 
 display(client_trajeto1)
 
@@ -107,7 +100,7 @@ num_sess_per_cgi = num_sess// num_displ
 # COMMAND ----------
 
 # DBTITLE 1,Transformando deslocamento para antenas
-# Transform deslocamento para:
+# Transform deslocamento to:
 # msisdn, tx_uplink, tx_downlink, qt_volume, qt_duration, ds_start_time, ds_end_time, nu_served_imei, cd_cgi
 deslocamento = client_trajeto1.withColumn(
     "num_sess", array(*[lit(i) for i in range(num_sess)])

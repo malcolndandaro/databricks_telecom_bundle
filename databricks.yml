@@ -3,16 +3,13 @@
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
   name: databricks_telecom_bundle
-  
+
 
 resources:
-  volumes:
-    erb_volume:
-      catalog_name: ${var.catalog_name}
-      name: erb_dataset
-      schema_name: misc
+
   
 include:
+  - config.yml
   - resources/*.yml
   - src/geracao_dados/jobs/*.yml
   - src/batch_ingestion/dlt_pipelines/*.yml
@@ -21,19 +18,7 @@ include:
   - src/data_warehousing/dashboards/*.yml
   - src/data_warehousing/jobs/*.yml
   - src/bundle_orchestrator/jobs/*.yml
-
-variables:
-  catalog_name:
-    description: Catalogo utilizado para criar os objetos
-    default: ctakamiya_bundle
-  
-  full_email:
-    description: "The current user's email"
-    default: ${workspace.current_user.userName}
-  
-  my_user_name:
-    description: "The current user's name (before @)"
-    default: ${var.full_email.split("@")[0]}
+  - src/ML/jobs/*.yml
 
   
 targets:
