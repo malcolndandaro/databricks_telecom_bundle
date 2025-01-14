@@ -1,7 +1,7 @@
 resources:
   jobs:
-    Task_6_Bronze_Silver_Product_Subscription:
-      name: "Task 6 - Bronze Silver - Product Subscription"
+    Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions:
+      name: "[Ingestão][1] Ingere dados para bronze e processa silver: product_subscriptions"
       tasks:
         - task_key: bronze_product_subscriptions
           pipeline_task:

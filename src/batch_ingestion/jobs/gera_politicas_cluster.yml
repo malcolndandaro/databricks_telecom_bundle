@@ -1,0 +1,20 @@
+resources:
+  jobs:
+    Ingestao_0_Gera_politicas_de_Cluster:
+      name: "[Ingestão][0] Gera politicas de Cluster"
+      tasks:
+        - task_key: cluster_policies
+          notebook_task:
+            notebook_path: ../../geracao_dados/policies/cluster_policies.py
+            base_parameters:
+              env: prod
+            source: WORKSPACE
+      tags:
+        cost_center: "100.001"
+        domain: misc
+        env: prod
+        project: geral
+        uc_name: Ingestão
+        uc_step: "0"
+      queue:
+        enabled: true

@@ -1,7 +1,7 @@
 resources:
   jobs:
-    Task_0_Generate_auxiliary_tables:
-      name: "Task 0 - Generate Auxiliary Tables"
+    Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados:
+      name: "[Geração de Dados] [0] Gera tabelas que auxiliam a geração de dados"
       tasks:
         - task_key: download_erb_Jul2024
           notebook_task:

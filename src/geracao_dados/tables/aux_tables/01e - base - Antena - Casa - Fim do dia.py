@@ -5,14 +5,15 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Introduction
+# MAGIC # Introdução
 # MAGIC
-# MAGIC This notebook generates a dataset to serve as a basis for generating geolocation data.
-# MAGIC The table `aux_enderecos` was created using a real dataset of ERBs. This dataset contains the geolocations of the ERBs, which were used as reference points to create nearby fake addresses.
+# MAGIC Este notebook gera um conjunto de dados para servir como base para a geração de dados com geolocalização.
+# MAGIC A tabela `aux_enderecos` foi criada usando um conjunto de dados real de ERBs. Este conjunto de dados contém geolocalizações das ERBs, que foram usadas como pontos de referência para criar endereços falsos nas proximidades.
 
 # COMMAND ----------
 
 from pyspark.sql.functions import pandas_udf, col, lit, unix_timestamp, expr, to_timestamp, array, explode, rand
+
 from pyspark.sql.types import ArrayType, DoubleType
 import pandas as pd
 import numpy as np
@@ -23,12 +24,11 @@ import pickle
 
 # COMMAND ----------
 
-dbutils.widgets.text("begin_time_home", "0","Begin Time at home")
-dbutils.widgets.text("end_time_home", "6","End Time at home")
+dbutils.widgets.text("begin_time_home", "22","Begin Time at home")
+dbutils.widgets.text("end_time_home", "24","End Time at home")
 dbutils.widgets.text("data_ref", "2024-10-01 00:00:00","Reference Date")
 dbutils.widgets.text("qt_GB_month", "25","GB p/ Month")
 dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
-dbutils.widgets.text("amostra","False", "Trabalhar com Amostra?")
 
 
 data_ref            = dbutils.widgets.get("data_ref")
@@ -37,39 +37,16 @@ end_time_home       = int(dbutils.widgets.get("end_time_home"))
 qt_GB_month         = int(dbutils.widgets.get("qt_GB_month"))
 catalog_name        = dbutils.widgets.get("catalog_name")
 
-amostra             = dbutils.widgets.get("amostra") == "True"
 
 
 # COMMAND ----------
 
-from pyspark.sql.functions import rand, col
-
-clients = spark.read.table(f"{catalog_name}.misc.aux_tbl_clientes")
-
-clients = (
-    clients.withColumn("id_addr", (rand() * 1436920).cast("int")) # 1436920 is the number of addresses in the table
-     .select("id_addr", "nu_tlfn", "nu_imei_aprl", "cd_ddd")
-)
-
-if (amostra):
-    clients = clients.sample(False, fraction=1.0).limit(10000)
-
-address = spark.read.table(f"{catalog_name}.misc.aux_enderecos")
-client_location = ( 
-    clients
-    .join(address, on = (address.id == clients.id_addr))
-)
-
-client_location1 = client_location.select("nu_tlfn",
-                                         col("erb_preferida").alias('cd_cgi'), 
-                                         "nu_imei_aprl", 
-                                         col("cd_ddd").alias("cd_area"),                                         
-                                         col("lon").alias("lon_res"), 
-                                         col("lat").alias("lat_res"))
+client_location1 = spark.read.table(f"{catalog_name}.misc.aux_tbl_cliente_localizacao")
+display(client_location1)
 
 # COMMAND ----------
 
-num_clients = clients.count()
+num_clients = client_location1.count()
 num_rows_antenna = 13_000_000_000
 num_rows_antenna_per_client = num_rows_antenna / num_clients
 
@@ -81,14 +58,6 @@ num_sess = (end_time_home - begin_time_home) * 100
 morning_tx_down = (volume_traffic_morning * 1024 **3) / (num_sess * 50)
 morning_tx_up = 0.10 * morning_tx_down
 
-
-# COMMAND ----------
-
-display(client_location1)
-
-# COMMAND ----------
-
-client_location1.write.saveAsTable(f"{catalog_name}.misc.aux_tbl_cliente_localizacao")
 
 # COMMAND ----------
 
