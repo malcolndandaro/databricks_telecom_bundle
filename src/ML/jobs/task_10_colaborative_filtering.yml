@@ -1,21 +1,21 @@
 resources:
   jobs:
-    Microssegmentacao_5_Treino_Microssegmentacao:
-      name: "[Microssegmentacao][5] Treino Microssegmentacao"
+    Task_10_Colaborative_Filtering:
+      name: "Task 10 - Colaborative Filtering"
       tasks:
-        - task_key: Treino_Modelo_Segmentacao
+        - task_key: Recomendacao
           notebook_task:
-            notebook_path: ../Clustering Navegacao.py
+            notebook_path: ../Collaborative Filtering.py
             base_parameters:
               catalog_name: ${var.catalog_name}
-              date_param: 2024-11-01
+              date_param: 2024-12-01
             source: WORKSPACE
-          job_cluster_key: Treino_Modelo_Segmentacao_cluster
+          job_cluster_key: Recomendacao_cluster
       job_clusters:
-        - job_cluster_key: Treino_Modelo_Segmentacao_cluster
+        - job_cluster_key: Recomendacao_cluster
           new_cluster:
             cluster_name: ""
-            spark_version: 15.4.x-cpu-ml-scala2.12
+            spark_version: 15.4.x-scala2.12
             azure_attributes:
               first_on_demand: 1
               availability: ON_DEMAND_AZURE
@@ -26,17 +26,21 @@ resources:
               cost_center: "400.002"
               project: microsegmentacao
               env: prod
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
             enable_elastic_disk: true
             #policy_id: 00043A82FE13964D
             data_security_mode: SINGLE_USER
-            runtime_engine: STANDARD
-            num_workers: 4      
+            runtime_engine: PHOTON
+            autoscale:
+              min_workers: 2
+              max_workers: 4      
       tags:
         cost_center: "400.002"
         domain: resource
         env: prod
         project: microsegmentacao
         uc_name: Microssegmentação
-        uc_step: "5"
+        uc_step: "4"
       queue:
         enabled: true

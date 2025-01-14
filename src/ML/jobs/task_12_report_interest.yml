@@ -1,14 +1,14 @@
 resources:
   jobs:
-    Microssegmentacao_6_Relatorio_Interesse:
-      name: "[Microssegmentacao][6] Relatorio Interesse"
+    Task_12_Report_Interest:
+      name: "Task 12 - Report Interest"
       tasks:
         - task_key: Gera_Relatorio_Interesse
           notebook_task:
             notebook_path: ../Definindo Segmentos.py
             base_parameters:
               catalog_name: ${var.catalog_name}
-              date_param: 2024-11-01
+              date_param: 2024-12-01
             source: WORKSPACE
           job_cluster_key: Gera_Relatorio_Interesse_cluster
         - task_key: Carrega_Interesse
@@ -20,7 +20,7 @@ resources:
               source: WORKSPACE
             parameters:
               catalog_name: ${var.catalog_name}
-              date_param: 2024-11-01          
+              date_param: 2024-12-01          
             warehouse_id: ${var.antenna_warehouse_id} 
       job_clusters:
         - job_cluster_key: Gera_Relatorio_Interesse_cluster

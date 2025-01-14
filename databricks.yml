@@ -6,13 +6,6 @@ bundle:
 
 
 resources:
-  volumes:
-    erb_volume:
-      catalog_name: ${var.catalog_name}
-      name: erb_dataset
-      schema_name: misc
-  
-
 
   
 include:

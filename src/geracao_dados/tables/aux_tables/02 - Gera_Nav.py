@@ -5,31 +5,28 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","ctakamiya_bundle", "Nome do catálogo")
 catalog_name        = dbutils.widgets.get("catalog_name")
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col, explode, arrays_zip
+from pyspark.sql.functions import col, explode, arrays_zip, expr
 
 # COMMAND ----------
 
-# Criando padrão de Navegação
+# Creating centroids (100 centroids)
 
-padrao_navegacao = spark.sql(f"""
-WITH count_cte AS (
-    SELECT COUNT(*) AS cnt FROM {catalog_name}.misc.aux_tbl_clientes
-),
-numbers AS (
-    SELECT explode(sequence(1, 32768)) AS n -- 2^15 = 32768, all possible 15-bit combinations
+centroids = spark.sql(f"""
+WITH numbers AS (
+    SELECT explode(sequence(1, 32768)) AS n
 ),
 binary_rows AS (
     SELECT 
         ROW_NUMBER() OVER (ORDER BY n) AS row_num,
         n
     FROM numbers
-    WHERE n < POWER(2, 15) -- 2^15 = 32768, all possible 15-bit combinations
-      AND BIT_COUNT(n) >=2 and BIT_COUNT(n) <= 8 
+    WHERE n < POWER(2, 15)
+      AND BIT_COUNT(n) >= 3 AND BIT_COUNT(n) <= 10
 ),
 limited_rows AS (
     SELECT 
@@ -54,7 +51,6 @@ limited_rows AS (
 ),
 final_rows AS (
     SELECT 
-        limited_rows.row_num,
         array(
             (n & 16384) / 16384,
             (n & 8192) / 8192,
@@ -72,123 +68,120 @@ final_rows AS (
             (n & 2) / 2,
             (n & 1)
         ) AS cols_array,
-        count_cte.cnt,
-        ROW_NUMBER() OVER (ORDER BY limited_rows.row_num) AS rn,
-        array_join(
-            filter(
-                array(
-                    CASE WHEN (n & 16384) / 16384 = 1 THEN 1 ELSE NULL END,
-                    CASE WHEN (n & 8192) / 8192 = 1 THEN 2 ELSE NULL END,
-                    CASE WHEN (n & 4096) / 4096 = 1 THEN 3 ELSE NULL END,
-                    CASE WHEN (n & 2048) / 2048 = 1 THEN 4 ELSE NULL END,
-                    CASE WHEN (n & 1024) / 1024 = 1 THEN 5 ELSE NULL END,
-                    CASE WHEN (n & 512) / 512 = 1 THEN 6 ELSE NULL END,
-                    CASE WHEN (n & 256) / 256 = 1 THEN 7 ELSE NULL END,
-                    CASE WHEN (n & 128) / 128 = 1 THEN 8 ELSE NULL END,
-                    CASE WHEN (n & 64) / 64 = 1 THEN 9 ELSE NULL END,
-                    CASE WHEN (n & 32) / 32 = 1 THEN 10 ELSE NULL END,
-                    CASE WHEN (n & 16) / 16 = 1 THEN 11 ELSE NULL END,
-                    CASE WHEN (n & 8) / 8 = 1 THEN 12 ELSE NULL END,
-                    CASE WHEN (n & 4) / 4 = 1 THEN 13 ELSE NULL END,
-                    CASE WHEN (n & 2) / 2 = 1 THEN 14 ELSE NULL END,
-                    CASE WHEN (n & 1) = 1 THEN 15 ELSE NULL END
-                ),
-                x -> x IS NOT NULL
-            ),
-            ','
-        ) AS ones_positions
+        ARRAY(
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT),
+            CAST(RAND() * 5 + 1 AS INT)
+        ) AS other_categories_weights,
+        ARRAY(
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT),
+            CAST(RAND() * 50 + 50 AS INT)
+        ) AS main_categories_weights
     FROM limited_rows
-    CROSS JOIN count_cte
+),
+categories_calculation AS (
+    SELECT 
+        zip_with(
+            transform(main_categories_weights, x -> CAST(x AS DOUBLE)),
+            transform(cols_array, x -> CAST(x AS DOUBLE)),
+            (x, y) -> x * y
+        ) as main_categories,
+        zip_with(
+            transform(other_categories_weights, x -> CAST(x AS DOUBLE)),
+            cols_array,
+            (x, y) -> x * (CAST(y AS INT) ^ 1)
+        ) as other_categories
+    FROM final_rows
+),
+categories_result AS (
+    SELECT 
+        zip_with(
+            main_categories,
+            other_categories,
+            (x, y) -> x + y
+        ) as categories
+    FROM categories_calculation
+),
+final_result AS (
+    SELECT 
+        categories,
+        TRANSFORM(categories, x -> x / (AGGREGATE(categories, 0, (acc, y) -> acc + CAST(y AS INT)))) AS categories_percentage,
+        TRANSFORM(categories_percentage, x -> CEIL(x * 15)) AS centroids_coord,
+        ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS id
+    FROM categories_result
 )
-SELECT * 
-FROM final_rows
-WHERE rn <= (SELECT cnt FROM count_cte)""")
+SELECT id, categories, categories_percentage, centroids_coord
+FROM final_result
+TABLESAMPLE (100 ROWS)
+""")
 
 # COMMAND ----------
 
+display(centroids)
+
+# COMMAND ----------
+
+padrao_navegacao = spark.table(f"{catalog_name}.misc.aux_tbl_clientes") \
+    .withColumn("centroid_id", expr(f"floor(rand() * {centroids.count()}) + 1")) \
+    .join(
+        centroids.withColumnRenamed("id", "centroid_id"),
+        on="centroid_id",
+        how="left"
+    ).withColumn("new_coords", 
+                 expr("""
+                      transform(centroids_coord, x -> ABS(x + CAST(RAND() * 4 - 2 AS INT)))
+                      """)
+    ).withColumn("site_id", 
+                 expr("""
+                      transform(centroids_coord, x -> CAST(RAND() * 50 + 1 AS INT))
+                      """)                      
+    ).withColumn("nav_categorias_id",
+                 expr("""
+                      flatten(
+                      transform(sequence(1, 15), 
+                           x -> array_repeat(x, CAST(element_at(new_coords, x) AS INT)))
+                      )
+                      """)
+    ).withColumn("nav_site_id",
+                 expr("""
+                      flatten(
+                      transform(sequence(1, 15), 
+                           x -> array_repeat(
+                                CAST(element_at(site_id, x) AS INT), 
+                                CAST(element_at(new_coords, x) AS INT)))
+                      )
+                      """)
+    )
 display(padrao_navegacao)
 
 # COMMAND ----------
 
-from pyspark.sql.functions import expr, rand, shuffle
-
-padrao_navegacao = padrao_navegacao.withColumn(
-    "categorias_id",
-    expr("""
-        transform(
-            split(ones_positions, ','),
-            x -> cast(x as int)
-        )
-    """)
-).withColumn(
-    "nav_categorias_id",
-    expr("""
-        flatten(
-            transform(
-                sequence(1, 34),
-                x -> categorias_id
-            )
-        )
-    """)
-).withColumn(
-    "nav_categorias_id",
-    expr("slice(shuffle(nav_categorias_id), 1, 34)")
-).withColumn(
-    "site_id",
-    expr("""
-       transform(sequence(1, size(categorias_id)), x -> cast(rand() * 50 + 1 as int))
-    """)
-).withColumn(
-    "site_id",
-    shuffle(expr("site_id"))
-).withColumn(
-    "nav_site_id",
-    expr("""
-        transform(sequence(1, 34), x -> element_at(site_id, (x % size(site_id)) + 1))
-    """)
-)
-
-display(padrao_navegacao)
-
-# COMMAND ----------
-
-padrao_navegacao = padrao_navegacao.select(
-    col("row_num").alias("id"),
-    "categorias_id",
-    "nav_categorias_id",
-    "nav_site_id"
-)
-num_comportamento = padrao_navegacao.count()
-display(padrao_navegacao)
-
-# COMMAND ----------
-
-# df_msisdn = spark.read.table(f"{catalog_name}.misc.aux_tbl_clientes"
-# ).select("nu_tlfn"
-# ).withColumn("id_comportamento", (rand() * num_comportamento).cast("int")).limit(10000) # Somente para teste
-
-df_msisdn = spark.read.table(f"{catalog_name}.misc.aux_tbl_clientes"
-).select("nu_tlfn"
-).withColumn("id_comportamento", (rand() * num_comportamento).cast("int"))
-
-display(df_msisdn)
-
-# COMMAND ----------
-
-nav = df_msisdn.join(
-    padrao_navegacao, 
-    df_msisdn.id_comportamento == padrao_navegacao.id, 
-    "inner"
-).select(
-    "nu_tlfn", 
-    "nav_categorias_id",
-    "nav_site_id"    
-)
-display(nav)
-
-# COMMAND ----------
-
-nav.write.format("delta").mode("overwrite").saveAsTable(f"{catalog_name}.misc.aux_tbl_padrao_de_navegacao")
+display(padrao_navegacao.filter("centroid_id = 7"))
 
 # COMMAND ----------
 
@@ -199,7 +192,7 @@ display(dados_antenas)
 
 from pyspark.sql.functions import expr
 
-nav = nav.withColumn("ds_ip", expr("concat(cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int))"))
+nav = padrao_navegacao.withColumn("ds_ip", expr("concat(cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int), '.', cast(floor(rand() * 256) as int))"))
 
 # COMMAND ----------
 

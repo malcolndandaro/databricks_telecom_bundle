@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC # Introduction
+# MAGIC
+# MAGIC  This notebook will generate antenna pattern simulating users commuting from home to workplace.
+# MAGIC
+
+# COMMAND ----------
+
 # MAGIC %pip install faiss-cpu==1.8.0.post1
 # MAGIC dbutils.library.restartPython()
 
@@ -34,11 +42,9 @@ catalog_name        = dbutils.widgets.get("catalog_name")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Carga de cliente e endereços
+# MAGIC # Loading Client and Addresses
 # MAGIC
-# MAGIC Carregando cliente e endereços gerado no notebook anteriro:
-# MAGIC https://adb-6120542968195864.4.azuredatabricks.net/?o=6120542968195864#notebook/316131127233056/command/316131127233244
-# MAGIC
+# MAGIC Loading client and addresses generated in the previous notebook: 01a - base - Antenna Home
 # MAGIC
 
 # COMMAND ----------

@@ -1,11 +1,11 @@
 resources:
   jobs:
-    Navegação_3_Carrega_Navegação_Dia:
-      name: "[Navegação][3] Carrega Navegação Dia"
+    Task_5_Load_Navigation:
+      name: "Task 5 - Load Navigation"
       tasks:
         - task_key: Carrega_Navegacao_Dia
           for_each_task:
-            inputs: '["2024-11-01"]'
+            inputs: '["2024-12-01"]'
             concurrency: 1
             task:
               task_key: Carrega_Navegacao_Dia_iteration

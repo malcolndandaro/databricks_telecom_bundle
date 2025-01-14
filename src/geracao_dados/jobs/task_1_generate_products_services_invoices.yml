@@ -1,7 +1,7 @@
 resources:
   jobs:
-    Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento:
-      name: "[Data Warehousing][1] Gera dados de produtos, serviços e faturamento"
+    Task_1_Generate_products_services_invoices:    
+      name: "Task 1 - Generate Product Services and Invoices"
       tasks:
         - task_key: product_subscriptions
           notebook_task:

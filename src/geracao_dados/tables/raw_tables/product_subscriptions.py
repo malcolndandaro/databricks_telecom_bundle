@@ -33,7 +33,8 @@ from pyspark.sql.types import FloatType, StringType
 # COMMAND ----------
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = 2_000_000
+#data_rows = 2_000_000
+data_rows = 300_000
 
 
 generation_spec = (
@@ -129,7 +130,9 @@ df = df.select(columns)
 # DBTITLE 1,PK validation
 # Validate PK
 PK = ["nu_tlfn", "nu_doct", "user_id", "id_prdt", "dt_prmr_atvc_lnha"]
+print(f"{data_rows=}, {df.select(PK).distinct().count()=}")
 assert data_rows == df.select(PK).distinct().count()
+
 
 # COMMAND ----------
 

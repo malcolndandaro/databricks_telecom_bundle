@@ -1,9 +1,9 @@
 resources:
   jobs:
-    Microssegmentacao_4_Carrega_Feature_Store_Produto:
-      name: "[Microssegmentacao][4] Carrega Feature Store - Produto"
+    Task_9_Load_Feature_Store_Produto:
+      name: "Task 9 - Load Feature Store - Produto"
       description: |-
-        Carrega Feature Store - Interesse
+        Carrega Feature Store - Produto
         Baseado nas informações de antenas/navegação com geolocalização
       tasks:
         - task_key: cria_feature_store_produto

@@ -1,11 +1,11 @@
 resources:
   jobs:
-    Antena_2_Carga_de_Trafego_de_Antena:
-      name: "[Antena][2] Carga de Trafego de Antena"
+    Task_3_Load_Antenna_Traffic:
+      name: "Task 3 - Load Antenna Traffic"
       tasks:
         - task_key: carrega_dia_trafego_antena
           for_each_task:
-            inputs: '["2024-11-01","2024-11-02"]'
+            inputs: '["2024-12-01","2024-12-02"]'
             concurrency: 1
             task:
               task_key: loop_carga_dia_antena_iteration

@@ -1,41 +1,42 @@
 resources:
   jobs:
-    Navegação_2_Cria_Padrão_Navegação:
-      name: "[Navegação][2] Cria Padrão Navegação"
+    Task_11_Clustering:
+      name: "Task 11 - Clustering"
       tasks:
-        - task_key: Cria_Padrao_Navegacao
+        - task_key: Treino_Modelo_Segmentacao
           notebook_task:
-            notebook_path: ../tables/aux_tables/02 - Gera_Nav.py
+            notebook_path: ../Clustering Navegacao.py
             base_parameters:
               catalog_name: ${var.catalog_name}
-              amostra: "False"
+              date_param: 2024-12-01
             source: WORKSPACE
-          job_cluster_key: Job_cluster_navegacao          
+          job_cluster_key: Treino_Modelo_Segmentacao_cluster
       job_clusters:
-        - job_cluster_key: Job_cluster_navegacao
+        - job_cluster_key: Treino_Modelo_Segmentacao_cluster
           new_cluster:
             cluster_name: ""
-            spark_version: 15.4.x-scala2.12
+            spark_version: 15.4.x-cpu-ml-scala2.12
             azure_attributes:
               first_on_demand: 1
               availability: ON_DEMAND_AZURE
               spot_bid_max_price: -1
-            node_type_id: Standard_D32ads_v5
+            node_type_id: Standard_D16ads_v5
             custom_tags:
               domain: resource
               cost_center: "400.002"
               project: microsegmentacao
               env: prod
-            enable_elastic_disk: true            
+            enable_elastic_disk: true
+            #policy_id: 00043A82FE13964D
             data_security_mode: SINGLE_USER
-            runtime_engine: PHOTON
+            runtime_engine: STANDARD
             num_workers: 4      
       tags:
         cost_center: "400.002"
         domain: resource
         env: prod
         project: microsegmentacao
-        uc_name: Navegação
-        uc_step: "2"
+        uc_name: Microssegmentação
+        uc_step: "5"
       queue:
         enabled: true

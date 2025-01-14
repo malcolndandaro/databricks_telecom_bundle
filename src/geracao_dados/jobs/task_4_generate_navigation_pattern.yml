@@ -1,18 +1,18 @@
 resources:
   jobs:
-    Microssegmentacao_4_Colaborative_Filtering_Treino:
-      name: "[Microssegmentacao][4] Colaborative Filtering - Treino"
+    Task_4_Generate_Navigation_Pattern:
+      name: "Task 4 - Generate Navigation Pattern"
       tasks:
-        - task_key: Recomendacao
+        - task_key: Cria_Padrao_Navegacao
           notebook_task:
-            notebook_path: ../Collaborative Filtering.py
+            notebook_path: ../tables/aux_tables/02 - Gera_Nav.py
             base_parameters:
               catalog_name: ${var.catalog_name}
-              date_param: 2024-11-01
+              amostra: "False"
             source: WORKSPACE
-          job_cluster_key: Recomendacao_cluster
+          job_cluster_key: Job_cluster_navegacao          
       job_clusters:
-        - job_cluster_key: Recomendacao_cluster
+        - job_cluster_key: Job_cluster_navegacao
           new_cluster:
             cluster_name: ""
             spark_version: 15.4.x-scala2.12
@@ -20,27 +20,22 @@ resources:
               first_on_demand: 1
               availability: ON_DEMAND_AZURE
               spot_bid_max_price: -1
-            node_type_id: Standard_D16ads_v5
+            node_type_id: Standard_D32ads_v5
             custom_tags:
               domain: resource
               cost_center: "400.002"
               project: microsegmentacao
               env: prod
-            spark_env_vars:
-              PYSPARK_PYTHON: /databricks/python3/bin/python3
-            enable_elastic_disk: true
-            #policy_id: 00043A82FE13964D
+            enable_elastic_disk: true            
             data_security_mode: SINGLE_USER
             runtime_engine: PHOTON
-            autoscale:
-              min_workers: 2
-              max_workers: 4      
+            num_workers: 4      
       tags:
         cost_center: "400.002"
         domain: resource
         env: prod
         project: microsegmentacao
-        uc_name: Microssegmentação
-        uc_step: "4"
+        uc_name: Navegação
+        uc_step: "2"
       queue:
         enabled: true

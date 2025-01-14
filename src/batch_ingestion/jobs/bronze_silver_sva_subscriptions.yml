@@ -1,7 +1,7 @@
 resources:
   jobs:
-    Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions:
-      name: "[Ingestão][1] Ingere dados para bronze e processa silver: sva_subscriptions"
+    Task_7_bronze_silver_sva_subscriptions:
+      name: "Task 7 - Bronze Silver SVA Subscriptions"
       tasks:
         - task_key: bronze_sva_subscriptions
           pipeline_task:
