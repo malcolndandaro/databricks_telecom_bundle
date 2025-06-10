@@ -23,7 +23,7 @@ CREATE OR REFRESH STREAMING TABLE fact_invoicing (
     DT_PGTO DATE COMMENT 'Data do Pagamento da Fatura',
     VL_FTRA DECIMAL(13,2) COMMENT 'Valor da Fatura',
     VL_RCRG DECIMAL(5,2) COMMENT 'Valor do Recarga',
-    GOLD_TS	TIMESTAMP COMMENT 'Data de ingestão do Registro para camada Gold',
+    GOLD_TS	TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada Gold',
     CONSTRAINT SK_FACT_INVOICING_DIM_DATE_FK FOREIGN KEY (SK_DIM_DATE) REFERENCES ${confs.p_catalog}.misc.dim_date,
     CONSTRAINT SK_FACT_INVOICING_DIM_CUSTOMER_FK FOREIGN KEY (SK_DIM_CUSTOMER) REFERENCES ${confs.p_catalog}.customer_gold.dim_customer,
     CONSTRAINT SK_FACT_INVOICING_DIM_PRODUCT_FK FOREIGN KEY (SK_DIM_PRODUCT) REFERENCES ${confs.p_catalog}.customer_gold.dim_product

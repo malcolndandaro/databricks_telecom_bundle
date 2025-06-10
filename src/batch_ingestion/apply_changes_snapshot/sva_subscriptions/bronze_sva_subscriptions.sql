@@ -18,7 +18,7 @@ CREATE OR REFRESH MATERIALIZED VIEW sva_subscriptions
     taxiss DECIMAL(7,2) COMMENT 'Percentual de ISS',
     discountvalue STRING COMMENT 'Valor de Desconto Atrelado ao Serviço',
     data_contratacao STRING NOT NULL COMMENT 'Data e Hora da Contratação do Serviço',
-    bronze_ts TIMESTAMP COMMENT 'Data e Hora da Ingestão do Dado',
+    bronze_ts TIMESTAMP COMMENT 'Data e Hora da Ingestao do Dado',
     _metadata_file_path STRING COMMENT 'Caminho do Arquivo de Origem',
     CONSTRAINT pk_sva_subscriptions PRIMARY KEY (msisdn, productid, data_contratacao)
 )

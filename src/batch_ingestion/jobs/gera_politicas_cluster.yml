@@ -1,7 +1,7 @@
 resources:
   jobs:
     Ingestao_0_Gera_politicas_de_Cluster:
-      name: "[Ingestão][0] Gera politicas de Cluster"
+      name: "[Ingestao][0] Gera politicas de Cluster"
       tasks:
         - task_key: cluster_policies
           notebook_task:
@@ -14,7 +14,7 @@ resources:
         domain: misc
         env: prod
         project: geral
-        uc_name: Ingestão
+        uc_name: Ingestao
         uc_step: "0"
       queue:
         enabled: true

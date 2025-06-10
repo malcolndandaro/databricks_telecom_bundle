@@ -28,7 +28,7 @@ df_aux_tbl_produtos = spark.read.table(aux_tbl_produtos)
 
 schema_ddl = """
     SK_DIM_PRODUCT LONG PRIMARY KEY COMMENT 'Chave Primária',
-    ROW_INGESTION_TIMESTAMP TIMESTAMP COMMENT 'Timestamp de Ingestão da Linha',
+    ROW_INGESTION_TIMESTAMP TIMESTAMP COMMENT 'Timestamp de Ingestao da Linha',
     ID_PRDT INT COMMENT 'ID do Produto',
     DS_PRDT STRING COMMENT 'Descrição do Produto',
     DS_PLNO STRING COMMENT 'Descrição do Plano',

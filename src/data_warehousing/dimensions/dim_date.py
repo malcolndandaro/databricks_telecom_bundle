@@ -185,7 +185,7 @@ import dlt
 
 schema = """
     SK_DIM_DATE INT PRIMARY KEY COMMENT 'Chave Surrogada do Calendário',
-    ROW_INGESTION_TIMESTAMP TIMESTAMP COMMENT 'Timestamp de Ingestão da Linha',
+    ROW_INGESTION_TIMESTAMP TIMESTAMP COMMENT 'Timestamp de Ingestao da Linha',
     DATA DATE COMMENT 'Data',
     ANO INT COMMENT 'Ano',
     SEMESTRE STRING COMMENT 'Semestre',

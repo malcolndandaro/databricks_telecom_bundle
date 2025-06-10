@@ -217,7 +217,7 @@ dbutils.fs.rm(volume_path, recurse=True)
 # COMMAND ----------
 
 for k,v in date_dict.items():
-    df.filter(f"group_2_months = '{k}'").drop("group_2_months").write.format("parquet").mode("append").option("path", f"{volume_path}/{v}").save()
+    df.filter(f"group_2_months = '{k}'").drop("group_2_months").write.format("parquet").mode("append").option("path", f"{volume_path}").save()
 
 # COMMAND ----------
 

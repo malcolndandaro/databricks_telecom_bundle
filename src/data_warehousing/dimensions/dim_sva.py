@@ -28,7 +28,7 @@ df_aux_tbl_produtos = spark.read.table(aux_tbl_sva)
 
 schema_ddl = """
     SK_DIM_SVA LONG PRIMARY KEY COMMENT 'Chave Primária',
-    GOLD_TS TIMESTAMP COMMENT 'Timestamp de Ingestão da Linha',
+    GOLD_TS TIMESTAMP COMMENT 'Timestamp de Ingestao da Linha',
     PRODUCTID STRING COMMENT 'Identificador do Produto',
     PRODUCTNAME STRING COMMENT 'Nome do Produto',
     SPNAME STRING COMMENT 'Provedor do Serviço',

@@ -30,6 +30,7 @@ base_policy = {
 
 # COMMAND ----------
 
+existing_policies = [x.name for x in w.cluster_policies.list()]
 for project in tag_list:
     tag_policy = tag_list[project]
     policy = base_policy.copy()
@@ -37,7 +38,12 @@ for project in tag_list:
     policy["custom_tags.domain"] = { "type": "fixed", "value": tag_policy["domain"] }
     policy["custom_tags.cost_center"] = { "type": "fixed", "value": tag_policy["cost_center"] }
     policy["custom_tags.project"] = { "type": "fixed", "value": project }
-    de_cluster_policy = w.cluster_policies.create(
-        name=f"Projeto {project}",
-        definition=json.dumps(policy),
-    )
+    policy_name = f"Projeto {project}"
+
+    if policy_name in existing_policies:
+        print(f"policy with name: {policy_name} already exists, skipping")
+    else:    
+        de_cluster_policy = w.cluster_policies.create(
+            name=policy_name,
+            definition=json.dumps(policy),
+        )

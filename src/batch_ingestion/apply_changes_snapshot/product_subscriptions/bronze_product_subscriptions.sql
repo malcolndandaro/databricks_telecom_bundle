@@ -32,7 +32,7 @@ CREATE OR REFRESH MATERIALIZED VIEW product_subscriptions
     dt_ini_plno DATE COMMENT 'Data de Inicio do Plano atual',
     user_id STRING NOT NULL COMMENT 'UUID Unico do Cliente',
     _rescued_data STRING COMMENT 'Dados que foram recuperados do Parquet',
-    bronze_ts TIMESTAMP COMMENT 'Data de ingestão do registro',
+    bronze_ts TIMESTAMP COMMENT 'Data de Ingestao do registro',
     _metadata_file_path STRING COMMENT 'Caminho do arquivo de origem',
     CONSTRAINT pk_product_subscription2 PRIMARY KEY (nu_tlfn, nu_doct, user_id, id_prdt, dt_prmr_atvc_lnha)
 )

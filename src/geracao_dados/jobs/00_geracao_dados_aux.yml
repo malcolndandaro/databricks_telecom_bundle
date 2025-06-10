@@ -1,7 +1,7 @@
 resources:
   jobs:
     Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados:
-      name: "[Geração de Dados] [0] Gera tabelas que auxiliam a geração de dados"
+      name: "[Geracao de Dados] [0] Gera tabelas que auxiliam a Geracao de dados"
       tasks:
         - task_key: datalake_structure_uc_volumes
           notebook_task:
@@ -71,12 +71,8 @@ resources:
             spark_conf:
               spark.master: local[*, 4]
               spark.databricks.cluster.profile: singleNode
-            azure_attributes:
-              first_on_demand: 1
-              availability: ON_DEMAND_AZURE
-              spot_bid_max_price: -1
-            node_type_id: Standard_D32as_v5
-            driver_node_type_id: Standard_D32as_v5
+            node_type_id: m6i.8xlarge 
+            driver_node_type_id: m6i.8xlarge 
             custom_tags:
               cost_center: "100.001"
               project: geral
@@ -95,7 +91,7 @@ resources:
         domain: misc
         env: prod
         project: geral
-        uc_name: Geração de Dados
+        uc_name: Geracao de Dados
         uc_step: "0"
       queue:
         enabled: true

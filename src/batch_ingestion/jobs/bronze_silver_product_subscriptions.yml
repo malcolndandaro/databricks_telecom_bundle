@@ -1,7 +1,7 @@
 resources:
   jobs:
     Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions:
-      name: "[Ingestão][1] Ingere dados para bronze e processa silver: product_subscriptions"
+      name: "[Ingestao][1] Ingere dados para bronze e processa silver: product_subscriptions"
       tasks:
         - task_key: bronze_product_subscriptions
           pipeline_task:
@@ -18,7 +18,7 @@ resources:
         domain: customer
         env: prod
         project: financeiro
-        uc_name: Ingestão
+        uc_name: Ingestao
         uc_step: "1"
       queue:  
         enabled: true

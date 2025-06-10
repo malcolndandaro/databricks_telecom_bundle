@@ -38,11 +38,7 @@ resources:
           new_cluster:
             cluster_name: ""
             spark_version: 15.4.x-scala2.12
-            azure_attributes:
-              first_on_demand: 1
-              availability: ON_DEMAND_AZURE
-              spot_bid_max_price: -1
-            node_type_id: Standard_D32ads_v5
+            node_type_id: m6i.8xlarge 
             custom_tags:
               domain: misc
               cost_center: "100.001"
@@ -60,7 +56,7 @@ resources:
         domain: misc
         env: prod
         project: geral
-        uc_name: Geração de Dados
+        uc_name: Geracao de Dados
         uc_step: "0"
       queue:
         enabled: true

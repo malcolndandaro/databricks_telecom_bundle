@@ -25,7 +25,7 @@ CREATE OR REFRESH STREAMING TABLE fact_subscription (
     FL_DEBT_AUTM	TINYINT COMMENT 'Flag para indicar se o cliente possui debito automatico ativado: 1 Sim - 0 Não',
     FL_CNTA_ONLN	TINYINT COMMENT 'Flag para indicar se o cliente cadastrou recebimento da fatura por email: 1 Sim - 0 Não',
     FL_PLNO_TTLR	TINYINT COMMENT 'Flag para indicar se o cliente é titular da linha: 1 Sim - 0 Não',
-    GOLD_TS	TIMESTAMP COMMENT 'Data de ingestão do Registro para camada Gold',
+    GOLD_TS	TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada Gold',
     CONSTRAINT SK_FACT_SUBSCRIPTION_DIM_DATE_FK FOREIGN KEY (SK_DIM_DATE) REFERENCES ${confs.p_catalog}.misc.dim_date,
     CONSTRAINT SK_FACT_SUBSCRIPTION_DIM_CUSTOMER_FK FOREIGN KEY (SK_DIM_CUSTOMER) REFERENCES ${confs.p_catalog}.customer_gold.dim_customer,
     CONSTRAINT SK_FACT_SUBSCRIPTION_DIM_PRODUCT_FK FOREIGN KEY (SK_DIM_PRODUCT) REFERENCES ${confs.p_catalog}.customer_gold.dim_product

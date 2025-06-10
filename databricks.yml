@@ -12,7 +12,9 @@ include:
   - src/data_warehousing/dashboards/*.yml
   - src/data_warehousing/jobs/*.yml
   - src/bundle_orchestrator/jobs/*.yml
-  
+
+
+
 variables:
   catalog_name:
     description: Catalogo utilizado para criar os objetos
@@ -28,13 +30,10 @@ targets:
     # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
     mode: development
     default: true
-    workspace:
-      host: https://adb-4562026214062884.4.azuredatabricks.net
 
   prod:
     mode: production
     workspace:
-      host: https://adb-4562026214062884.4.azuredatabricks.net
       # We explicitly specify /Workspace/Users/malcoln.dandaro@databricks.com to make sure we only have a single copy.
       root_path: /Workspace/Users/malcoln.dandaro@databricks.com/.bundle/${bundle.name}/${bundle.target}
     permissions:

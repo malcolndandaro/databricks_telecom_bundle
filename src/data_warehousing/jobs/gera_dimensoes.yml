@@ -13,6 +13,8 @@ resources:
           pipeline_task:
             pipeline_id: ${resources.pipelines.pipeline_dim_customer.id}
             full_refresh: true
+          max_retries: 1
+          min_retry_interval_millis: 120000
         - task_key: dim_product
           depends_on:
             - task_key: dim_date

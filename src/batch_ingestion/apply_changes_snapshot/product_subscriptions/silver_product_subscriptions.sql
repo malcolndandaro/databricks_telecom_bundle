@@ -42,7 +42,7 @@ CREATE STREAMING TABLE product_subscriptions
     dt_trca_aprl DATE COMMENT 'Data da Troca de Aparelho',
     dt_ini_plno DATE COMMENT 'Data de Inicio do Plano atual',
     user_id STRING NOT NULL COMMENT 'UUID Unico do Cliente',
-    silver_ts TIMESTAMP COMMENT 'Data de ingestão do Registro para camada silver',
+    silver_ts TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada silver',
     __START_AT TIMESTAMP COMMENT 'Data de Inicio do Registro',
     __END_AT TIMESTAMP COMMENT 'Data Fim do Registro',
     CONSTRAINT pk_product_subscription PRIMARY KEY (nu_tlfn, nu_doct, user_id, id_prdt, dt_prmr_atvc_lnha)

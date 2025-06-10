@@ -34,7 +34,7 @@ CREATE STREAMING TABLE sva_subscriptions
     taxiss DECIMAL(7,2) COMMENT 'Percentual de ISS',
     discountvalue STRING COMMENT 'Valor de Desconto Atrelado ao Serviço',
     data_contratacao STRING NOT NULL COMMENT 'Data e Hora da Contratação do Serviço',
-    silver_ts TIMESTAMP COMMENT 'Data de ingestão do Registro para camada silver',
+    silver_ts TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada silver',
     __START_AT TIMESTAMP COMMENT 'Data de Inicio do Registro',
     __END_AT TIMESTAMP COMMENT 'Data Fim do Registro',
     CONSTRAINT pk_sva_subscriptions PRIMARY KEY (msisdn, productid, data_contratacao)

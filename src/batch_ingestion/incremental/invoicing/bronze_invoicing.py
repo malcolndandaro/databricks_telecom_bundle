@@ -30,6 +30,7 @@ def invoicing(cluster_by="dt_ciclo_rcrg"):
     .readStream
     .format("cloudFiles")
     .option("cloudFiles.format", "parquet")
+    .option("cloudFiles.partitionColumns", "")
     .load(data_path)
     .withColumn("bronze_ts", current_timestamp())
     .withColumn("_metadata_file_path", expr("_metadata.file_path"))

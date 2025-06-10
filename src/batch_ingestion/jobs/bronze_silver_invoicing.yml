@@ -1,7 +1,7 @@
 resources:
   jobs:
     Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing:
-      name: "[Ingestão][2] Ingere dados para bronze e processa silver: invoicing"
+      name: "[Ingestao][2] Ingere dados para bronze e processa silver: invoicing"
       tasks:
         - task_key: bronze_invoicing
           pipeline_task:
@@ -18,10 +18,10 @@ resources:
         domain: billing
         env: prod
         project: billing
-        uc_name: Ingestão
+        uc_name: Ingestao
         uc_step: "2"
       queue:
         enabled: true
       parameters:
         - name: p_catalog
-          default: ${var.catalog_name}
+          default: ${var.catalog_name}  

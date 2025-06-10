@@ -7,7 +7,7 @@
 # MAGIC %md
 # MAGIC # Introdução
 # MAGIC
-# MAGIC Este notebook gera um conjunto de dados para servir como base para a geração de dados com geolocalização.
+# MAGIC Este notebook gera um conjunto de dados para servir como base para a Geracao de dados com geolocalização.
 # MAGIC A tabela `aux_enderecos` foi criada usando um conjunto de dados real de ERBs. Este conjunto de dados contém geolocalizações das ERBs, que foram usadas como pontos de referência para criar endereços falsos nas proximidades.
 
 # COMMAND ----------

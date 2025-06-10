@@ -1,0 +1,6 @@
+resources:
+  dashboards:
+    clientes_por_categoria:
+      display_name: "clientes_por_categoria"
+      warehouse_id: 8baced1ff014912d
+      file_path: ./clientes_por_categoria.lvdash.json
