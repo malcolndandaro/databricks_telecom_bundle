@@ -170,7 +170,7 @@ table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
 # COMMAND ----------
 
 
-data_rows = 1500000
+data_rows = 1500000/10
 
 ## msisdn = nu_tlfn (aux_tbl_clientes)
 ## cpf = nu_doct (aux_tbl_clientes)
