@@ -17,7 +17,6 @@ from pyspark.sql.types import ArrayType, DoubleType
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import torch
 import faiss
 import pickle
 
@@ -27,7 +26,7 @@ dbutils.widgets.text("begin_time_home", "0","Begin Time at home")
 dbutils.widgets.text("end_time_home", "6","End Time at home")
 dbutils.widgets.text("data_ref", "2024-10-01 00:00:00","Reference Date")
 dbutils.widgets.text("qt_GB_month", "25","GB p/ Month")
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 dbutils.widgets.text("amostra","False", "Trabalhar com Amostra?")
 
 
@@ -129,6 +128,7 @@ display(client_location1)
 # COMMAND ----------
 
 client_location1.write.saveAsTable(f"{catalog_name}.misc.aux_tbl_cliente_localizacao")
+dbutils.notebook.exit("success")
 
 # COMMAND ----------
 

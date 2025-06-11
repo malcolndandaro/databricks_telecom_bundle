@@ -17,7 +17,7 @@ from pyspark.sql.functions import col
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 dbutils.widgets.text("num_address","40", "Numero de endereços por ERB")
 dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
 

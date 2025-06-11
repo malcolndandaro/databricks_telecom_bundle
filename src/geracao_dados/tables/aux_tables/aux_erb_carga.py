@@ -1,5 +1,5 @@
 # Databricks notebook source
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 catalog_name        = dbutils.widgets.get("catalog_name")
 
 # COMMAND ----------
@@ -53,7 +53,7 @@ schema = StructType([
 ])
 
 import pandas as pd
-df_erb_pd = pd.read_csv(f"file:///Workspace/Shared/dataset_erb/ERB-Jul24.csv", sep=";")
+df_erb_pd = pd.read_csv(f"file:ERB-Jul24.csv", sep=";")
 
 
 df_erb = spark.createDataFrame(df_erb_pd, schema=schema)

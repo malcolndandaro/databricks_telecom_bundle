@@ -5,7 +5,7 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 catalog_name        = dbutils.widgets.get("catalog_name")
 
 # COMMAND ----------

@@ -28,7 +28,7 @@ dbutils.widgets.text("begin_time_home", "22","Begin Time at home")
 dbutils.widgets.text("end_time_home", "24","End Time at home")
 dbutils.widgets.text("data_ref", "2024-10-01 00:00:00","Reference Date")
 dbutils.widgets.text("qt_GB_month", "25","GB p/ Month")
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 
 
 data_ref            = dbutils.widgets.get("data_ref")

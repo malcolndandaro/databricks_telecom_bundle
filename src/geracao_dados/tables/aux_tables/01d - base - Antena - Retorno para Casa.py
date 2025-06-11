@@ -21,7 +21,7 @@ dbutils.widgets.text("data_ref", "2024-10-01 00:00:00","Data de Referência")
 dbutils.widgets.text("qt_GB_month", "25","GB p/ Mês")
 dbutils.widgets.text("displcment_number", "5","Número de deslocamentos")
 dbutils.widgets.text("data_ref", "2024-10-01 00:00:00","Data Referência")
-dbutils.widgets.text("catalog_name","dev", "Nome do catálogo")
+dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 
 data_ref            = dbutils.widgets.get("data_ref")
 departure_time      = int(dbutils.widgets.get("departure_time"))
