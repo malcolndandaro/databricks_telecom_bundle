@@ -36,8 +36,7 @@ from datetime import datetime, timedelta
 # COMMAND ----------
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = 800/10
-
+data_rows = int(800/10)
 
 generation_spec = (
     dg.DataGenerator(sparkSession=spark, 

@@ -248,8 +248,7 @@ spark.udf.register(f"generate_cpf_udf", generate_cpf_udf)
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
 
-data_rows = 6_000_000/10
-
+data_rows = int(6000000/10)
 generation_spec = (
     dg.DataGenerator(
                     name='clientes', 

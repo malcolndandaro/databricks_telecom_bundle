@@ -33,7 +33,7 @@ from pyspark.sql.types import FloatType, StringType
 # COMMAND ----------
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = 2_000_000/10
+data_rows = int(2000000/10)
 
 
 generation_spec = (

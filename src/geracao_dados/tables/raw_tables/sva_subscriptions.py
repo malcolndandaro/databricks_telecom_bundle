@@ -45,7 +45,7 @@ servicos = [x.productid for x in servicos]
 # COMMAND ----------
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = 1_000_000/10
+data_rows = int(1000000/10)
 
 generation_spec = (
     dg.DataGenerator(sparkSession=spark, 
