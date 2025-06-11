@@ -52,7 +52,11 @@ schema = StructType([
     StructField("5G", StringType(), True),
 ])
 
-df_erb = spark.read.csv(f"file:///Workspace/Shared/dataset_erb/ERB-Jul24.csv", header=True, sep=";", schema=schema)
+import pandas as pd
+df_erb_pd = pd.read_csv(f"file:///Workspace/Shared/dataset_erb/ERB-Jul24.csv", sep=";")
+
+
+df_erb = spark.createDataFrame(df_erb_pd, schema=schema)
 
 # COMMAND ----------
 

@@ -251,11 +251,13 @@ FakerTextIT = FakerTextFactory(locale=['pt_BR'])
 data_rows = 6_000_000
 
 generation_spec = (
-    dg.DataGenerator(name='clientes', 
+    dg.DataGenerator(
+                    name='clientes', 
+                    sparkSession=spark,
                      rows=data_rows,
                      random=False
                      )
-    .withColumn('nu_tlfn', 'string', uniqueValues=data_rows, text=FakerTextIT("msisdn"))
+    .withColumn('nu_tlfn', 'string', uniqueValues=data_rows, text=FakerTextIT(  "msisdn"))
     .withColumn('nu_doct', 'string', uniqueValues=data_rows, expr="generate_cpf_udf()")#text=FakerTextIT("cpf"))
     .withColumn('user_id', 'string', expr="upper(substring(cast(uuid() as string), 1, 20))", uniqueValues=data_rows)
     .withColumn("nu_imei_aprl", 'string', expr="generate_imei()")
@@ -274,38 +276,23 @@ generation_spec = (
 
 # COMMAND ----------
 
-df_aux_tbl_clientes = generation_spec.build(withStreaming=True, options={"rowsPerSecond": 10000})
+df_aux_tbl_clientes = generation_spec.build(withStreaming=False)
 
 # COMMAND ----------
 
-checkpoint = f"/tmp/checkpoints/{p_table}"
+
 table_full_name = f"{p_catalog}.{p_schema}.{p_table}"
 spark.sql(f"drop table if exists {table_full_name}")
-dbutils.fs.rm(checkpoint, recurse=True)
+
 
 # COMMAND ----------
-
-# MAGIC %sql
-# MAGIC set spark.databricks.delta.properties.defaults.enableChangeDataFeed = true;
-
-# COMMAND ----------
-
 (
     df_aux_tbl_clientes
     .withColumn("last_update", current_timestamp())
-    .writeStream.format("delta")
-    .option("checkpointLocation", checkpoint)
-    .toTable(table_full_name)
+    .write
+    .format("delta")
+    .mode("overwrite")
+    .option("delta.enableChangeDataFeed", "true")
+    .saveAsTable(table_full_name)
 )
 
-# COMMAND ----------
-
-import time
-time.sleep(120)
-while spark.sql(f"select count(*) as qtd from {table_full_name}").collect()[0].qtd < data_rows:
-    time.sleep(10)
-for x in spark.streams.active:
-    try:
-        x.stop()
-    except RuntimeError:
-        pass

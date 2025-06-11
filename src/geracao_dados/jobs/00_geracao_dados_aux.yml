@@ -10,12 +10,7 @@ resources:
               p_schema: ingestion
               p_volume: raw_data
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
-          libraries:
-            - pypi:
-                package: Faker==28.4.1
-            - pypi:
-                package: dbldatagen==0.4.0.post1
+          environment_key: databricks_telecom_bundle
         - task_key: aux_tables_-_municipios
           depends_on:
             - task_key: datalake_structure_uc_volumes
@@ -24,7 +19,7 @@ resources:
             base_parameters:
               p_schema: misc
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
+          environment_key: databricks_telecom_bundle
         - task_key: aux_functions_-_address
           depends_on:
             - task_key: aux_tables_-_municipios
@@ -33,7 +28,7 @@ resources:
             base_parameters:
               p_schema: misc
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
+          environment_key: databricks_telecom_bundle
         - task_key: aux_tables_-_produtos
           depends_on:
             - task_key: datalake_structure_uc_volumes
@@ -42,7 +37,7 @@ resources:
             base_parameters:
               p_schema: misc
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
+          environment_key: databricks_telecom_bundle
         - task_key: aux_tables_-_servicos
           depends_on:
             - task_key: datalake_structure_uc_volumes
@@ -51,7 +46,7 @@ resources:
             base_parameters:
               p_schema: misc
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
+          environment_key: databricks_telecom_bundle
         - task_key: aux_tables_-_clientes
           depends_on:
             - task_key: aux_functions_-_address
@@ -62,30 +57,15 @@ resources:
             base_parameters:
               p_schema: misc
             source: WORKSPACE
-          job_cluster_key: 00_setup_data_generation_cluster
-      job_clusters:
-        - job_cluster_key: 00_setup_data_generation_cluster
-          new_cluster:
-            cluster_name: ""
-            spark_version: 15.4.x-scala2.12
-            spark_conf:
-              spark.master: local[*, 4]
-              spark.databricks.cluster.profile: singleNode
-            node_type_id: m6i.8xlarge 
-            driver_node_type_id: m6i.8xlarge 
-            custom_tags:
-              cost_center: "100.001"
-              project: geral
-              domain: misc
-              env: prod
-              ResourceClass: SingleNode
-            spark_env_vars:
-              PYSPARK_PYTHON: /databricks/python3/bin/python3
-            enable_elastic_disk: true
-            #policy_id: "0013174633674821"
-            data_security_mode: SINGLE_USER
-            runtime_engine: STANDARD
-            num_workers: 0
+          environment_key: databricks_telecom_bundle
+      environments:
+        - environment_key: databricks_telecom_bundle
+          spec:
+            client: "2"
+            dependencies:
+              - Faker==28.4.1
+              - dbldatagen==0.4.0.post1
+      performance_target: OPTIMIZED
       tags:
         cost_center: "100.001"
         domain: misc

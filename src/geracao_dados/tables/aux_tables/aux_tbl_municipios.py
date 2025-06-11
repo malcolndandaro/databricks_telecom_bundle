@@ -16,7 +16,15 @@ notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext(
 
 # COMMAND ----------
 
-df_estados = spark.read.csv(f"file:/Workspace/{notebook_path}/aux_files/estados.csv", header=True, inferSchema=True)
+import pandas as pd
+
+# Read CSV using pandas
+df_estados_pd = pd.read_csv(f"/Workspace/{notebook_path}/aux_files/estados.csv")
+
+# Convert pandas DataFrame to Spark DataFrame
+df_estados = spark.createDataFrame(df_estados_pd)
+
+# Write Spark DataFrame to Delta table
 df_estados.write.mode("overwrite").format("delta").saveAsTable(f"{p_catalog}.{p_schema}.aux_tbl_estados")
 
 # COMMAND ----------
@@ -31,7 +39,13 @@ df_estados.write.mode("overwrite").format("delta").saveAsTable(f"{p_catalog}.{p_
 
 # COMMAND ----------
 
-df_municipios = spark.read.csv(f"file:/Workspace/{notebook_path}/aux_files/municipios.csv", header=True, inferSchema=True)
+# Read CSV using pandas
+df_municipios_pd = pd.read_csv(f"/Workspace/{notebook_path}/aux_files/municipios.csv")
+
+# Convert pandas DataFrame to Spark DataFrame
+df_municipios = spark.createDataFrame(df_municipios_pd)
+
+# Write Spark DataFrame to Delta table
 df_municipios.write.mode("overwrite").format("delta").saveAsTable(f"{p_catalog}.{p_schema}.aux_tbl_municipios")
 
 # COMMAND ----------

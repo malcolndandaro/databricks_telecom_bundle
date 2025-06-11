@@ -40,6 +40,7 @@ generation_spec = (
     dg.DataGenerator(name='synthetic_data', 
                      rows=data_rows,
                      random=True,
+                     sparkSession=spark
                      )
     .withColumn('dt_prmr_atvc_lnha', 'date', begin="2015-01-01", end="2024-09-01", random=True)
     .withColumn('base_dt_dstv_lnha', 'date', expr="dateadd(day, (round(rand()*1000) * round(rand()*10)), dt_prmr_atvc_lnha)", omit=True)

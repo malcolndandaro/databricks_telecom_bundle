@@ -105,7 +105,8 @@ data_rows = df_coord_enderecos.count()
 generation_spec = (
     dg.DataGenerator(name='enderecos', # cidade e estado não são necessários, pois mesclaremos com dados das ERBs 
                      rows=data_rows,
-                     random=True
+                     random=True,
+                     sparkSession=spark
                      )
     .withColumn('no_lgrd', 'string', text=FakerTextIT("street_address"))
     .withColumn('no_imovel', 'string', text=FakerTextIT("building_number"))

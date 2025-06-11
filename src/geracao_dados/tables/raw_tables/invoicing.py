@@ -57,6 +57,7 @@ generation_spec = (
 
 # Reading directly from parquet as those tables will be ingested in later steps
 df_sva_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/ingestion/raw_data/customer/sva_subscriptions").load()
+df_sva_subscriptions = df_sva_subscriptions.withColumn("discountvalue", col("discountvalue").cast(FloatType()))
 df_product_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/ingestion/raw_data/customer/product_subscriptions").load()
 df_aux_tbl_produtos = spark.read.table(table_aux_tbl_produtos)
 
