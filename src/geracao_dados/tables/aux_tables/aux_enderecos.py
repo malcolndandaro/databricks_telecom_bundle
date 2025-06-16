@@ -118,17 +118,26 @@ generation_spec = (
 # COMMAND ----------
 
 df_address = generation_spec.build()
-display(df_address)
+
 
 # COMMAND ----------
 
 from pyspark.sql.functions import monotonically_increasing_id
 
-# Add a unique identifier to each DataFrame
-df_coord_enderecos_with_id = df_coord_enderecos.rdd.zipWithIndex().toDF().select(col("_2").alias("id"), col("_1.*"))
-df_address_with_id         = df_address.rdd.zipWithIndex().toDF().select(col("_2").alias("id"), col("_1.*"))
-# Join the DataFrames on the unique identifier
+from pyspark.sql.functions import row_number
+from pyspark.sql.window import Window
+
+# Create a Window spec for adding row numbers
+window_spec = Window.orderBy(monotonically_increasing_id())
+
+# Add row numbers to both DataFrames
+df_coord_enderecos_with_id = df_coord_enderecos.withColumn("id", row_number().over(window_spec))
+df_address_with_id = df_address.withColumn("id", row_number().over(window_spec))
+
+# Join on the row number
 df_concatenated = df_coord_enderecos_with_id.join(df_address_with_id, on="id")
+
+
 
 # display(df_concatenated)
 

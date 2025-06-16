@@ -58,6 +58,40 @@ resources:
               p_schema: misc
             source: WORKSPACE
           environment_key: databricks_telecom_bundle
+        - task_key: aux_tables_-_erb_carga
+          depends_on:
+            - task_key: aux_tables_-_clientes
+          notebook_task:
+            notebook_path: ../tables/aux_tables/aux_erb_carga.py
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+            source: WORKSPACE
+          environment_key: databricks_telecom_bundle
+        - task_key: aux_tables_-_enderecos
+          depends_on:
+            - task_key: aux_tables_-_erb_carga
+          notebook_task:
+            notebook_path: ../tables/aux_tables/aux_enderecos.py
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+              num_address: "40"
+              max_distance_erb: "3"
+            source: WORKSPACE
+          environment_key: databricks_telecom_bundle
+        - task_key: aux_tables_-_base_antena_casa
+          depends_on:
+            - task_key: aux_tables_-_enderecos
+          notebook_task:
+            notebook_path: ../tables/aux_tables/01a - base - Antena - Casa.py
+            base_parameters:
+              catalog_name: ${var.catalog_name}
+              begin_time_home: "0"
+              end_time_home: "6"
+              data_ref: "2024-10-01 00:00:00"
+              qt_GB_month: "25"
+              amostra: "False"
+            source: WORKSPACE
+          environment_key: databricks_telecom_bundle
       environments:
         - environment_key: databricks_telecom_bundle
           spec:
@@ -65,6 +99,7 @@ resources:
             dependencies:
               - Faker==28.4.1
               - dbldatagen==0.4.0.post1
+              - faiss-cpu==1.8.0.post1
       performance_target: OPTIMIZED
       tags:
         cost_center: "100.001"
