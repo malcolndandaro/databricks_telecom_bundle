@@ -2,12 +2,14 @@
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "misc")
 dbutils.widgets.text("p_table", "aux_tbl_clientes")
+dbutils.widgets.text("data_size", "small", "Data size (small=5%, medium=25%, large=100%)")
 
 # COMMAND ----------
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_table = dbutils.widgets.get("p_table")
+data_size = dbutils.widgets.get("data_size")
 
 # COMMAND ----------
 
@@ -246,9 +248,13 @@ spark.udf.register(f"generate_cpf_udf", generate_cpf_udf)
 
 # COMMAND ----------
 
-FakerTextIT = FakerTextFactory(locale=['pt_BR'])
+# Import the data size utility functions
+%run ../aux_functions/data_size_utils
 
-data_rows = int(6000000/10)
+FakerTextIT = FakerTextFactory(locale=['pt_BR'])
+original_rows = 6000000
+data_rows = calculate_data_rows(original_rows, data_size)
+
 generation_spec = (
     dg.DataGenerator(
                     name='clientes', 

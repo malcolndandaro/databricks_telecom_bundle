@@ -20,6 +20,7 @@ from pyspark.sql.functions import col
 dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
 dbutils.widgets.text("num_address","40", "Numero de endereços por ERB")
 dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
+dbutils.widgets.text("data_size", "small", "Data size (small=5%, medium=25%, large=100%)")
 
 
 # COMMAND ----------
@@ -27,6 +28,7 @@ dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
 num_address_per_erb = int(dbutils.widgets.get("num_address"))  
 max_distance_erb    = int(dbutils.widgets.get("max_distance_erb")) 
 catalog_name        = dbutils.widgets.get("catalog_name")
+data_size           = dbutils.widgets.get("data_size")
 
 # COMMAND ----------
 
@@ -99,8 +101,12 @@ df_coord_enderecos.write.mode("overwrite").saveAsTable(f"{catalog_name}.misc.aux
 import dbldatagen as dg
 from dbldatagen import FakerTextFactory, DataGenerator, fakerText, DataAnalyzer
 
+# Import the data size utility functions
+%run ../aux_functions/data_size_utils
+
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = df_coord_enderecos.count()
+original_rows = df_coord_enderecos.count()
+data_rows = calculate_data_rows(original_rows, data_size)
 
 generation_spec = (
     dg.DataGenerator(name='enderecos', # cidade e estado não são necessários, pois mesclaremos com dados das ERBs 

@@ -19,6 +19,9 @@ variables:
   catalog_name:
     description: Catalogo utilizado para criar os objetos
     default: databricks_telecom_bundle
+  data_size:
+    description: Tamanho dos dados a serem gerados (small=5%, medium=25%, large=100%)
+    default: small
 
 
 

@@ -6,20 +6,18 @@ import dbldatagen as dg
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "customer_bronze")
 dbutils.widgets.text("p_data_schema", "ingestion")
-
+dbutils.widgets.text("data_size", "small", "Data size (small=5%, medium=25%, large=100%)")
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_data_schema = dbutils.widgets.get("p_data_schema")
+data_size = dbutils.widgets.get("data_size")
 
 table_aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
 table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
 table_aux_tbl_servicos = f"{p_catalog}.misc.aux_tbl_servicos"
 
 volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/sva_subscriptions"
-
-
-
 
 # COMMAND ----------
 
@@ -44,8 +42,11 @@ servicos = [x.productid for x in servicos]
 
 # COMMAND ----------
 
-FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-data_rows = int(1000000/10)
+# Import the data size utility functions
+%run ../aux_functions/data_size_utils
+
+original_rows = 1000000
+data_rows = calculate_data_rows(original_rows, data_size)
 
 generation_spec = (
     dg.DataGenerator(sparkSession=spark, 
