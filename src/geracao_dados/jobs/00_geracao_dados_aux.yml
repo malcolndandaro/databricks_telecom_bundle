@@ -82,7 +82,7 @@ resources:
           depends_on:
             - task_key: aux_tables_-_enderecos
           notebook_task:
-            notebook_path: ../tables/aux_tables/01a - base - Antena - Casa.py
+            notebook_path: ../tables/aux_tables/aux_base_antena_casa.py
             base_parameters:
               catalog_name: ${var.catalog_name}
               begin_time_home: "0"

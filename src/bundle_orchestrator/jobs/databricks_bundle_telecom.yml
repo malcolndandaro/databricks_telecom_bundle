@@ -11,26 +11,21 @@ resources:
             job_id: ${resources.jobs.Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento.id}
           depends_on:
             - task_key: Geracao_de_Dados_0_Gera_tabelas_que_auxiliam_a_geracao_de_dados
-        - task_key: Ingestao_0_Gera_politicas_de_Cluster
-          run_job_task:
-            job_id: ${resources.jobs.Ingestao_0_Gera_politicas_de_Cluster.id}
-          depends_on:
-            - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
         - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions
           run_job_task:
             job_id: ${resources.jobs.Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_product_subscriptions.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
+            - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
         - task_key: Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions
           run_job_task:
             job_id: ${resources.jobs.Ingestao_1_Ingere_dados_para_bronze_e_processa_silver_sva_subscriptions.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
+            - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
         - task_key: Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing
           run_job_task:
             job_id: ${resources.jobs.Ingestao_2_Ingere_dados_para_bronze_e_processa_silver_invoicing.id}
           depends_on:
-            - task_key: Ingestao_0_Gera_politicas_de_Cluster
+            - task_key: Data_Warehousing_1_Gera_dados_de_produtos_servicos_e_faturamento
         - task_key: Data_Warehousing_1_Gera_Dimensoes
           run_job_task:
             job_id: ${resources.jobs.Data_Warehousing_1_Gera_Dimensoes.id}
