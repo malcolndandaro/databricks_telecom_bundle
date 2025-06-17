@@ -8,7 +8,6 @@ resources:
             notebook_path: ../tables/raw_tables/product_subscriptions.py
             base_parameters:
               p_schema: customer_bronze
-              data_size: ${var.data_size}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle          
         - task_key: sva_subscriptions
@@ -18,7 +17,6 @@ resources:
             notebook_path: ../tables/raw_tables/sva_subscriptions.py
             base_parameters:
               p_schema: customer_bronze
-              data_size: ${var.data_size}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle
         - task_key: invoicing
@@ -28,7 +26,6 @@ resources:
             notebook_path: ../tables/raw_tables/invoicing.py
             base_parameters:
               p_schema: billing_bronze
-              data_size: ${var.data_size}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle
       environments:

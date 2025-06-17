@@ -2,12 +2,10 @@
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "billing_bronze")
 dbutils.widgets.text("p_data_schema", "ingestion")
-dbutils.widgets.text("data_size", "small", "Data size (small=5%, medium=25%, large=100%)")
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_data_schema = dbutils.widgets.get("p_data_schema")
-data_size = dbutils.widgets.get("data_size")
 
 table_aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
 table_product_subscriptions = f"{p_catalog}.customer_bronze.product_subscriptions"
@@ -34,14 +32,11 @@ from pyspark.sql.types import FloatType, StringType
 from pyspark.sql.functions import col, min, floor, months_between, lit
 from datetime import datetime, timedelta
 
-# Import the data size utility functions
-%run ../aux_functions/data_size_utils
 
 # COMMAND ----------
 
 FakerTextIT = FakerTextFactory(locale=['pt_BR'])
-original_rows = 2000000
-data_rows = calculate_data_rows(original_rows, data_size)
+data_rows = int(800/10)
 
 generation_spec = (
     dg.DataGenerator(sparkSession=spark, 

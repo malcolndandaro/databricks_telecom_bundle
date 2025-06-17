@@ -13,8 +13,6 @@
 # MAGIC val server = dbutils.widgets.get("server")
 # MAGIC dbutils.widgets.text("database", "", "SQL Server database")
 # MAGIC val database = dbutils.widgets.get("database")
-# MAGIC dbutils.widgets.text("data_size", "small", "Data size (small=5%, medium=25%, large=100%)")
-# MAGIC val data_size = dbutils.widgets.get("data_size")
 # MAGIC
 # MAGIC val user = "vivoadm"
 # MAGIC val password = "S-29ms*YD%+;$uyxwzhrNp"
@@ -171,11 +169,8 @@ table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
 
 # COMMAND ----------
 
-# Import the data size utility functions
-%run ../aux_functions/data_size_utils
 
-original_rows = 1500000
-data_rows = calculate_data_rows(original_rows, data_size)
+data_rows = int(1500000/10)
 
 ## msisdn = nu_tlfn (aux_tbl_clientes)
 ## cpf = nu_doct (aux_tbl_clientes)
