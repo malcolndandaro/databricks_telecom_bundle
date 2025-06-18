@@ -10,7 +10,7 @@ resources:
         - notebook:
             path: ../incremental/invoicing/silver_invoicing.sql
       target: ${resources.schemas.billing_silver.name}
-      development: true
+      
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

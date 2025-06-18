@@ -9,7 +9,7 @@ resources:
         - notebook:
             path: ../apply_changes_snapshot/product_subscriptions/bronze_product_subscriptions.sql
       target: ${resources.schemas.customer_bronze.name}
-      development: true
+      
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

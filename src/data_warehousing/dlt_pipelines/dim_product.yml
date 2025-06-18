@@ -10,7 +10,6 @@ resources:
         - notebook:
             path: ../dimensions/dim_product.py
       target: ${resources.schemas.customer_gold.name}
-      development: true
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

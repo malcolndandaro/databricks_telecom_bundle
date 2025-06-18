@@ -12,7 +12,7 @@ resources:
         - notebook:
             path: ../apply_changes_snapshot/sva_subscriptions/silver_sva_subscriptions_acfs.py
       target: ${resources.schemas.customer_silver.name}
-      development: true
+      
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

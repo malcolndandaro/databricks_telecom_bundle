@@ -11,7 +11,7 @@ resources:
         - notebook:
             path: ../reports/analise_performance_produto.sql
       target: ${resources.schemas.billing_gold.name}
-      development: true
+      
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

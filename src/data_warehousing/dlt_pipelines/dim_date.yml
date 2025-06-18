@@ -9,7 +9,7 @@ resources:
         - notebook:
             path: ../dimensions/dim_date.py
       target: ${resources.schemas.misc.name}
-      development: true
+      
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}

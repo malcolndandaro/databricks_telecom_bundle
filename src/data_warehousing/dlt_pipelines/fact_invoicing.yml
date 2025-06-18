@@ -12,7 +12,6 @@ resources:
         - notebook:
             path: ../facts/fact_invoicing.sql
       target: ${resources.schemas.billing_gold.name}
-      development: true
       photon: true
       channel: PREVIEW
       catalog: ${var.catalog_name}
