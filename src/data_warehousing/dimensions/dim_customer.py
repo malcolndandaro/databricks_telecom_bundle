@@ -1,12 +1,10 @@
 # Databricks notebook source
-dbutils.widgets.text("p_schema", "misc")
-dbutils.widgets.text("p_table", "dim_customer")
-
 # COMMAND ----------
 
 p_catalog = spark.conf.get("confs.p_catalog")
-p_schema = dbutils.widgets.get("p_schema")
-p_table = dbutils.widgets.get("p_table")
+p_schema_customer_gold = spark.conf.get("confs.p_schema_customer_gold")
+p_schema_misc = spark.conf.get("confs.p_schema_misc")
+p_table = "dim_customer"
 
 # COMMAND ----------
 
@@ -25,7 +23,7 @@ from datetime import datetime
 
 # COMMAND ----------
 
-aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
+aux_tbl_clientes = f"{p_catalog}.{p_schema_misc}.aux_tbl_clientes"
 df_aux_tbl_clientes = spark.read.table(aux_tbl_clientes)
 
 

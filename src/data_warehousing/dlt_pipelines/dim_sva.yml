@@ -4,10 +4,12 @@ resources:
       name: dim_sva
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_customer_gold: ${resources.schemas.customer_gold.name}
+        confs.p_schema_misc: ${resources.schemas.misc.name}
       libraries:
         - notebook:
             path: ../dimensions/dim_sva.py
-      target: customer_gold
+      target: ${resources.schemas.customer_gold.name}
       development: true
       photon: true
       channel: PREVIEW

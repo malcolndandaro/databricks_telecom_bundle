@@ -4,10 +4,11 @@ resources:
       name: bronze_sva_subscriptions
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_ingestion: ${resources.schemas.ingestion.name}
       libraries:
         - notebook:
             path: ../apply_changes_snapshot/sva_subscriptions/bronze_sva_subscriptions.sql
-      target: customer_bronze
+      target: ${resources.schemas.customer_bronze.name}
       development: true
       photon: true
       channel: PREVIEW

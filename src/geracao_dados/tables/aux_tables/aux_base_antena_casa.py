@@ -43,7 +43,8 @@ amostra             = dbutils.widgets.get("amostra") == "True"
 
 from pyspark.sql.functions import rand, col
 
-clients = spark.read.table(f"{catalog_name}.misc.aux_tbl_clientes")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
+clients = spark.read.table(f"{catalog_name}.{p_schema_misc}.aux_tbl_clientes")
 
 clients = (
     clients.withColumn("id_addr", (rand() * 1436920).cast("int")) # 1436920 is the number of addresses in the table
@@ -53,7 +54,7 @@ clients = (
 if (amostra):
     clients = clients.sample(False, fraction=1.0).limit(10000)
 
-address = spark.read.table(f"{catalog_name}.misc.aux_enderecos")
+address = spark.read.table(f"{catalog_name}.{p_schema_misc}.aux_enderecos")
 client_location = ( 
     clients
     .join(address, on = (address.id == clients.id_addr))
@@ -127,7 +128,7 @@ display(client_location1)
 
 # COMMAND ----------
 
-client_location1.write.saveAsTable(f"{catalog_name}.misc.aux_tbl_cliente_localizacao")
+client_location1.write.saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_tbl_cliente_localizacao")
 dbutils.notebook.exit("success")
 
 # COMMAND ----------
@@ -227,4 +228,4 @@ display(morning_client_antenna)
 
 # COMMAND ----------
 
-morning_client_antenna.write.format("delta").mode("append").saveAsTable(f"{catalog_name}.misc.aux_tbl_antenna_pattern")
+morning_client_antenna.write.format("delta").mode("append").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_tbl_antenna_pattern")

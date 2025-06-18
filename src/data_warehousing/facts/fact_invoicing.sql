@@ -11,7 +11,7 @@ select
   vl_ftra,
   vl_rcrg
 from
-  STREAM(${confs.p_catalog}.billing_silver.invoicing)
+  STREAM(${confs.p_catalog}.${confs.p_schema_billing_silver}.invoicing)
 
 -- COMMAND ----------
 
@@ -24,9 +24,9 @@ CREATE OR REFRESH STREAMING TABLE fact_invoicing (
     VL_FTRA DECIMAL(13,2) COMMENT 'Valor da Fatura',
     VL_RCRG DECIMAL(5,2) COMMENT 'Valor do Recarga',
     GOLD_TS	TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada Gold',
-    CONSTRAINT SK_FACT_INVOICING_DIM_DATE_FK FOREIGN KEY (SK_DIM_DATE) REFERENCES ${confs.p_catalog}.misc.dim_date,
-    CONSTRAINT SK_FACT_INVOICING_DIM_CUSTOMER_FK FOREIGN KEY (SK_DIM_CUSTOMER) REFERENCES ${confs.p_catalog}.customer_gold.dim_customer,
-    CONSTRAINT SK_FACT_INVOICING_DIM_PRODUCT_FK FOREIGN KEY (SK_DIM_PRODUCT) REFERENCES ${confs.p_catalog}.customer_gold.dim_product
+    CONSTRAINT SK_FACT_INVOICING_DIM_DATE_FK FOREIGN KEY (SK_DIM_DATE) REFERENCES ${confs.p_catalog}.${confs.p_schema_misc}.dim_date,
+CONSTRAINT SK_FACT_INVOICING_DIM_CUSTOMER_FK FOREIGN KEY (SK_DIM_CUSTOMER) REFERENCES ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_customer,
+CONSTRAINT SK_FACT_INVOICING_DIM_PRODUCT_FK FOREIGN KEY (SK_DIM_PRODUCT) REFERENCES ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_product
     )
   CLUSTER BY (SK_DIM_DATE, SK_DIM_CUSTOMER, SK_DIM_PRODUCT)
 as
@@ -41,10 +41,10 @@ select
   now() as GOLD_TS
 from
   STREAM(LIVE.invoicing) invoicing
-  join ${confs.p_catalog}.misc.dim_date as dim_date on invoicing.dt_ciclo_rcrg = dim_date.DATA
-  join ${confs.p_catalog}.customer_gold.dim_customer as dim_customer on invoicing.nu_doct = dim_customer.nu_doct
-  and dim_customer.__end_at is null
-  join ${confs.p_catalog}.customer_gold.dim_product as dim_product on invoicing.ds_plno = dim_product.ds_plno
-  and invoicing.ds_prdt = dim_product.ds_prdt
+  join ${confs.p_catalog}.${confs.p_schema_misc}.dim_date as dim_date on invoicing.dt_ciclo_rcrg = dim_date.DATA
+join ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_customer as dim_customer on invoicing.nu_doct = dim_customer.nu_doct
+and dim_customer.__end_at is null
+join ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_product as dim_product on invoicing.ds_plno = dim_product.ds_plno
+and invoicing.ds_prdt = dim_product.ds_prdt
   and dim_product.__end_at is null
   

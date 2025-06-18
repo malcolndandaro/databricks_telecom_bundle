@@ -1,6 +1,6 @@
 # Databricks notebook source
 p_catalog = spark.conf.get("confs.p_catalog")
-p_schema = "misc"
+p_schema_misc = spark.conf.get("confs.p_schema_misc", "misc")
 p_table = "dim_date"
 
 # COMMAND ----------
@@ -208,7 +208,7 @@ schema = """
 # Parâmetros
 mode_write = 'overwrite'
 catalog_name = p_catalog
-schema_name = p_schema
+schema_name = p_schema_misc
 table_name = p_table
 
 @dlt.table(

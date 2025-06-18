@@ -4,10 +4,14 @@ resources:
       name: fact_invoicing
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_billing_gold: ${resources.schemas.billing_gold.name}
+        confs.p_schema_billing_silver: ${resources.schemas.billing_silver.name}
+        confs.p_schema_customer_gold: ${resources.schemas.customer_gold.name}
+        confs.p_schema_misc: ${resources.schemas.misc.name}
       libraries:
         - notebook:
             path: ../facts/fact_invoicing.sql
-      target: billing_gold
+      target: ${resources.schemas.billing_gold.name}
       development: true
       photon: true
       channel: PREVIEW

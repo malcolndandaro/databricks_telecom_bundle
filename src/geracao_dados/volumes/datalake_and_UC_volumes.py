@@ -23,7 +23,7 @@ volume_uri = f"abfss://catalog-{p_catalog}@vivodatastorage.dfs.core.windows.net/
 
 # DBTITLE 1,Grant permission
 spark.sql(f""" CREATE CATALOG IF NOT EXISTS {p_catalog}""")
-spark.sql(f"""CREATE SCHEMA IF NOT EXISTS {p_catalog}.{p_schema}""")
+# Schema creation moved to bundle definition
 spark.sql(f"""CREATE VOLUME IF NOT EXISTS {volume_name} """)
 
 # COMMAND ----------

@@ -7,17 +7,19 @@
 
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema_table", "resource_bronze.navegacao_test_csv")
+dbutils.widgets.text("p_schema_resource_bronze", "resource_bronze")
 
 # COMMAND ----------
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema_table = dbutils.widgets.get("p_schema_table")
+p_schema_resource_bronze = dbutils.widgets.get("p_schema_resource_bronze")
 
 # COMMAND ----------
 
-checkpoint_path = f"/Volumes/{p_catalog}/ingestion/raw_data/checkpoints/telecom/navegacao/"
+checkpoint_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/checkpoints/telecom/navegacao/"
 table_name = f"{p_catalog}.{p_schema_table}"
-data_path = f"/Volumes/{p_catalog}/ingestion/raw_data/telecom/navegacao/"
+data_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/telecom/navegacao/"
 dbutils.fs.rm(checkpoint_path, recurse=True)
 if table_name.split(".")[2] == 'navegacao_test_csv':
     spark.sql(f"drop table if exists {table_name}")

@@ -100,7 +100,7 @@ df_delta = (
     spark
     .readStream.
     option("maxBytesPerTrigger", "1G")
-    .table(f"{p_catalog}.misc.tbl_antena")
+    .table(f"{p_catalog}.{p_schema_misc}.tbl_antena")
 )
 
 partition_date = p_partition_date

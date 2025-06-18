@@ -6,15 +6,16 @@ import dbldatagen as dg
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "customer_bronze")
 dbutils.widgets.text("p_data_schema", "ingestion")
-
+dbutils.widgets.text("p_schema_misc", "misc")
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_data_schema = dbutils.widgets.get("p_data_schema")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
 
-table_aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
-table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
-table_aux_tbl_servicos = f"{p_catalog}.misc.aux_tbl_servicos"
+table_aux_tbl_produtos = f"{p_catalog}.{p_schema_misc}.aux_tbl_produtos"
+table_aux_tbl_clientes = f"{p_catalog}.{p_schema_misc}.aux_tbl_clientes"
+table_aux_tbl_servicos = f"{p_catalog}.{p_schema_misc}.aux_tbl_servicos"
 
 volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/sva_subscriptions"
 
@@ -29,7 +30,7 @@ volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/sva_subsc
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC create schema if not exists $p_catalog.$p_schema
+# MAGIC -- Schema creation moved to bundle definition
 
 # COMMAND ----------
 
@@ -39,7 +40,7 @@ from pyspark.sql.types import FloatType, StringType
 
 # COMMAND ----------
 
-servicos = spark.sql(f"select productid from {p_catalog}.misc.aux_tbl_servicos").collect()
+servicos = spark.sql(f"select productid from {p_catalog}.{p_schema_misc}.aux_tbl_servicos").collect()
 servicos = [x.productid for x in servicos]
 
 # COMMAND ----------

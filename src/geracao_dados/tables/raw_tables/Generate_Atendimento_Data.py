@@ -151,7 +151,8 @@ from pyspark.sql.functions import row_number, expr, col, when, lit, rand, curren
 dbutils.widgets.text("p_catalog", "", "Catalog Name")
 p_catalog = dbutils.widgets.get("p_catalog")
 database = dbutils.widgets.get("database")
-table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
+p_schema_misc = dbutils.widgets.get("p_schema_misc", "misc")
+table_aux_tbl_clientes = f"{p_catalog}.{p_schema_misc}.aux_tbl_clientes"
 
 # COMMAND ----------
 

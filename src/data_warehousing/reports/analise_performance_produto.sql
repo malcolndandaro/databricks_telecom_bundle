@@ -16,10 +16,10 @@ SELECT
     COUNT(DISTINCT f.SK_DIM_CUSTOMER) AS CUSTOMER_COUNT,
     SUM(f.VL_FTRA) AS TOTAL_REVENUE,
     AVG(f.VL_FTRA) AS AVG_INVOICE_VALUE
-FROM ${confs.p_catalog}.billing_gold.fact_invoicing f
-JOIN ${confs.p_catalog}.customer_gold.dim_product p ON f.SK_DIM_PRODUCT = p.SK_DIM_PRODUCT
-JOIN ${confs.p_catalog}.misc.dim_date d ON f.SK_DIM_DATE = d.SK_DIM_DATE
-join ${confs.p_catalog}.customer_gold.dim_customer c on f.SK_DIM_CUSTOMER = c.SK_DIM_CUSTOMER
+FROM ${confs.p_catalog}.${confs.p_schema_billing_gold}.fact_invoicing f
+JOIN ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_product p ON f.SK_DIM_PRODUCT = p.SK_DIM_PRODUCT
+JOIN ${confs.p_catalog}.${confs.p_schema_misc}.dim_date d ON f.SK_DIM_DATE = d.SK_DIM_DATE
+join ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_customer c on f.SK_DIM_CUSTOMER = c.SK_DIM_CUSTOMER
 GROUP BY ALL
 ORDER BY ANO, TRIMESTRE DESC
 ;

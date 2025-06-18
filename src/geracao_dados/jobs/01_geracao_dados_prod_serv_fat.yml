@@ -7,7 +7,8 @@ resources:
           notebook_task:
             notebook_path: ../tables/raw_tables/product_subscriptions.py
             base_parameters:
-              p_schema: customer_bronze
+              p_schema: ${resources.schemas.customer_bronze.name}
+              p_schema_misc: ${resources.schemas.misc.name}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle          
         - task_key: sva_subscriptions
@@ -16,7 +17,8 @@ resources:
           notebook_task:
             notebook_path: ../tables/raw_tables/sva_subscriptions.py
             base_parameters:
-              p_schema: customer_bronze
+              p_schema: ${resources.schemas.customer_bronze.name}
+              p_schema_misc: ${resources.schemas.misc.name}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle
         - task_key: invoicing
@@ -25,7 +27,9 @@ resources:
           notebook_task:
             notebook_path: ../tables/raw_tables/invoicing.py
             base_parameters:
-              p_schema: billing_bronze
+              p_schema: ${resources.schemas.billing_bronze.name}
+              p_schema_customer_bronze: ${resources.schemas.customer_bronze.name}
+              p_schema_misc: ${resources.schemas.misc.name}
             source: WORKSPACE
           environment_key: databricks_telecom_bundle
       environments:
@@ -49,4 +53,4 @@ resources:
         - name: p_catalog
           default: ${var.catalog_name}
         - name: p_data_schema
-          default: ingestion
+          default: ${resources.schemas.ingestion.name}

@@ -1,7 +1,7 @@
 -- Databricks notebook source
 CREATE TEMPORARY LIVE VIEW bronze_product_subscriptions
 (CONSTRAINT tamanho_telefone EXPECT ( len(nu_tlfn) <= 13)) AS
-select * except(_rescued_data, _metadata_file_path, bronze_ts) from ${confs.p_catalog}.customer_bronze.product_subscriptions
+select * except(_rescued_data, _metadata_file_path, bronze_ts) from ${confs.p_catalog}.${confs.p_schema_customer_bronze}.product_subscriptions
 
 -- COMMAND ----------
 

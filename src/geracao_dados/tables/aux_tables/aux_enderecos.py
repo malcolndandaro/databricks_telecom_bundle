@@ -18,6 +18,8 @@ from pyspark.sql.functions import col
 # COMMAND ----------
 
 dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
+dbutils.widgets.text("p_schema_resource_bronze","resource_bronze", "Nome do schema da tabela de ERBs")
+dbutils.widgets.text("p_schema_misc","misc", "Nome do schema da tabela de endereços")
 dbutils.widgets.text("num_address","40", "Numero de endereços por ERB")
 dbutils.widgets.text("max_distance_erb","3", "Distância máxima ao ERBs KM")
 
@@ -30,7 +32,10 @@ catalog_name        = dbutils.widgets.get("catalog_name")
 
 # COMMAND ----------
 
-df_erbs = spark.read.table(f'{catalog_name}.resource_bronze.erb_coord').filter(col("NomeEntidade") == 'VIVO')
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
+p_schema_resource_bronze = dbutils.widgets.get("p_schema_resource_bronze")
+
+df_erbs = spark.read.table(f'{catalog_name}.{p_schema_resource_bronze}.erb_coord').filter(col("NomeEntidade") == 'VIVO')
 
 # COMMAND ----------
 
@@ -52,8 +57,9 @@ df_erbs = ( df_erbs
 
 )
 # display(df_erbs)
-df_erbs.write.mode("overwrite").saveAsTable(f"{catalog_name}.misc.aux_erb_coord")
-df_erbs.write.mode("overwrite").saveAsTable(f"{catalog_name}.resource_bronze.erb_coord_dec")
+df_erbs.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_erb_coord")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
+df_erbs.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_erb_coord")
 
 # COMMAND ----------
 
@@ -91,7 +97,7 @@ df_coord_enderecos = (df_erbs
 
 # COMMAND ----------
 
-df_coord_enderecos.write.mode("overwrite").saveAsTable(f"{catalog_name}.misc.aux_coord_enderecos")
+df_coord_enderecos.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_coord_enderecos")
 
 # COMMAND ----------
 
@@ -153,4 +159,4 @@ display(df_concatenated.count())
 # COMMAND ----------
 
 
-df_concatenated.write.mode("overwrite").saveAsTable(f"{catalog_name}.misc.aux_enderecos")
+df_concatenated.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_enderecos")

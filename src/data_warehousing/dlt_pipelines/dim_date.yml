@@ -4,10 +4,11 @@ resources:
       name: dim_date
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_misc: ${resources.schemas.misc.name}
       libraries:
         - notebook:
             path: ../dimensions/dim_date.py
-      target: misc
+      target: ${resources.schemas.misc.name}
       development: true
       photon: true
       channel: PREVIEW

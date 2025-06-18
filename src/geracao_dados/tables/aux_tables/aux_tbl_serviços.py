@@ -5,8 +5,8 @@ dbutils.widgets.text("p_schema", "misc")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC USE CATALOG $p_catalog;
-# MAGIC CREATE SCHEMA IF NOT EXISTS $p_schema
+# MAGIC USE CATALOG $p_catalog
+# MAGIC -- Schema creation moved to bundle definition
 
 # COMMAND ----------
 

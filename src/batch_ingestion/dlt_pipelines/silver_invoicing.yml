@@ -4,10 +4,12 @@ resources:
       name: silver_invoicing
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_billing_bronze: ${resources.schemas.billing_bronze.name}
+        confs.p_schema_billing_silver: ${resources.schemas.billing_silver.name}
       libraries:
         - notebook:
             path: ../incremental/invoicing/silver_invoicing.sql
-      target: billing_silver
+      target: ${resources.schemas.billing_silver.name}
       development: true
       photon: true
       channel: PREVIEW

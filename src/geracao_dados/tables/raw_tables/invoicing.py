@@ -2,14 +2,18 @@
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "billing_bronze")
 dbutils.widgets.text("p_data_schema", "ingestion")
+dbutils.widgets.text("p_schema_customer_bronze", "customer_bronze")
+dbutils.widgets.text("p_schema_misc", "misc")
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_data_schema = dbutils.widgets.get("p_data_schema")
+p_schema_customer_bronze = dbutils.widgets.get("p_schema_customer_bronze")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
 
-table_aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
-table_product_subscriptions = f"{p_catalog}.customer_bronze.product_subscriptions"
-table_sva_subscriptions = f"{p_catalog}.customer_bronze.sva_subscriptions"
+table_aux_tbl_produtos = f"{p_catalog}.{p_schema_misc}.aux_tbl_produtos"
+table_product_subscriptions = f"{p_catalog}.{p_schema_customer_bronze}.product_subscriptions"
+table_sva_subscriptions = f"{p_catalog}.{p_schema_customer_bronze}.sva_subscriptions"
 
 volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/billing/invoicing"
 
@@ -21,7 +25,7 @@ volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/billing/invoicing"
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC create schema if not exists $p_catalog.$p_schema
+# MAGIC -- Schema creation moved to bundle definition
 
 # COMMAND ----------
 
@@ -55,9 +59,9 @@ generation_spec = (
 # COMMAND ----------
 
 # Reading directly from parquet as those tables will be ingested in later steps
-df_sva_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/ingestion/raw_data/customer/sva_subscriptions").load()
+df_sva_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/sva_subscriptions").load()
 df_sva_subscriptions = df_sva_subscriptions.withColumn("discountvalue", col("discountvalue").cast(FloatType()))
-df_product_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/ingestion/raw_data/customer/product_subscriptions").load()
+df_product_subscriptions = spark.read.format("parquet").option("path",f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/product_subscriptions").load()
 df_aux_tbl_produtos = spark.read.table(table_aux_tbl_produtos)
 
 # COMMAND ----------
@@ -92,14 +96,14 @@ df = df.join(df_aux_tbl_produtos, on="id_prdt", how="inner").select(columns + ["
 
 # COMMAND ----------
 
-if spark.catalog.tableExists(f"{p_catalog}.misc.aux_tbl_invoicing"):
+if spark.catalog.tableExists(f"{p_catalog}.{p_schema_misc}.aux_tbl_invoicing"):
     pass
 else:
-    df.write.mode("overwrite").format("delta").saveAsTable(f"{p_catalog}.misc.aux_tbl_invoicing")
+    df.write.mode("overwrite").format("delta").saveAsTable(f"{p_catalog}.{p_schema_misc}.aux_tbl_invoicing")
 
 # COMMAND ----------
 
-df = spark.read.table(f"{p_catalog}.misc.aux_tbl_invoicing")
+df = spark.read.table(f"{p_catalog}.{p_schema_misc}.aux_tbl_invoicing")
 print(df.select("nu_tlfn", "dt_ciclo_rcrg").distinct().count())
 
 # COMMAND ----------

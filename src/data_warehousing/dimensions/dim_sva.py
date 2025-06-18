@@ -1,6 +1,7 @@
 # Databricks notebook source
 p_catalog = spark.conf.get("confs.p_catalog")
-p_schema = "customer_gold"
+p_schema_customer_gold = spark.conf.get("confs.p_schema_customer_gold", "customer_gold")
+p_schema_misc = spark.conf.get("confs.p_schema_misc", "misc")
 p_table = "dim_sva"
 
 # COMMAND ----------
@@ -20,7 +21,7 @@ from datetime import datetime
 
 # COMMAND ----------
 
-aux_tbl_sva = f"{p_catalog}.misc.aux_tbl_servicos"
+aux_tbl_sva = f"{p_catalog}.{p_schema_misc}.aux_tbl_servicos"
 df_aux_tbl_produtos = spark.read.table(aux_tbl_sva)
 
 

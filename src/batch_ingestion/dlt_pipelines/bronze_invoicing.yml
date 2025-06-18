@@ -4,10 +4,11 @@ resources:
       name: bronze_invoicing
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_ingestion: ${resources.schemas.ingestion.name}
       libraries:
         - notebook:
             path: ../incremental/invoicing/bronze_invoicing.py
-      target: billing_bronze
+      target: ${resources.schemas.billing_bronze.name}
       development: true
       photon: true
       channel: PREVIEW

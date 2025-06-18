@@ -1,14 +1,14 @@
 -- Databricks notebook source
-create schema if not exists resource_silver
+-- Schema creation moved to bundle definition
 
 -- COMMAND ----------
 
-create view if not exists resource_silver.tbl_antena
+create view if not exists ${catalog_name}.${schema_resource_silver}.tbl_antena
 as
-select * from resource_bronze.tbl_antena
+select * from ${catalog_name}.${schema_resource_bronze}.tbl_antena
 
 -- COMMAND ----------
 
-create view if not exists resource_silver.tbl_navegacao
+create view if not exists ${catalog_name}.${schema_resource_silver}.tbl_navegacao
 as
-select * from resource_bronze.tbl_navegacao
+select * from ${catalog_name}.${schema_resource_bronze}.tbl_navegacao

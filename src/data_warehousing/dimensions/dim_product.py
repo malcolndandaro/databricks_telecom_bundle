@@ -1,14 +1,15 @@
 # Databricks notebook source
 p_catalog = spark.conf.get("confs.p_catalog")
-p_schema = "customer_gold"
+p_schema_customer_gold = spark.conf.get("confs.p_schema_customer_gold", "customer_gold")
+p_schema_misc = spark.conf.get("confs.p_schema_misc", "misc")
 p_table = "dim_product"
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ### Premissas:
-# MAGIC - Nome: dim_calendario
-# MAGIC - Descrição da tabela: Tabela composta por variáveis qualitativas de tempo.
+# MAGIC - Nome: dim_produto
+# MAGIC - Descrição da tabela: Tabela composta por variáveis qualitativas de produto.
 # MAGIC - Tipo: SCD-1
 
 # COMMAND ----------
@@ -20,7 +21,7 @@ from datetime import datetime
 
 # COMMAND ----------
 
-aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
+aux_tbl_produtos = f"{p_catalog}.{p_schema_misc}.aux_tbl_produtos"
 df_aux_tbl_produtos = spark.read.table(aux_tbl_produtos)
 
 

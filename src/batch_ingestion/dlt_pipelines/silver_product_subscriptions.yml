@@ -4,12 +4,14 @@ resources:
       name: silver_product_subscriptions
       configuration:
         confs.p_catalog: ${var.catalog_name}
+        confs.p_schema_customer_bronze: ${resources.schemas.customer_bronze.name}
+        confs.p_schema_customer_silver: ${resources.schemas.customer_silver.name}
       libraries:
         - notebook:
             path: ../apply_changes_snapshot/product_subscriptions/silver_product_subscriptions.sql
         - notebook:
             path: ../apply_changes_snapshot/product_subscriptions/silver_product_subscriptions_acfs.py
-      target: customer_silver
+      target: ${resources.schemas.customer_silver.name}
       development: true
       photon: true
       channel: PREVIEW

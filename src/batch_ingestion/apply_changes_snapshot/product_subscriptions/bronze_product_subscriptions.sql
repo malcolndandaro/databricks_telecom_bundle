@@ -36,7 +36,7 @@ CREATE OR REFRESH MATERIALIZED VIEW product_subscriptions
     _metadata_file_path STRING COMMENT 'Caminho do arquivo de origem',
     CONSTRAINT pk_product_subscription2 PRIMARY KEY (nu_tlfn, nu_doct, user_id, id_prdt, dt_prmr_atvc_lnha)
 )
-AS SELECT *, current_timestamp as bronze_ts, _metadata.file_path as _metadata_file_path FROM parquet. `/Volumes/${confs.p_catalog}/ingestion/raw_data/customer/product_subscriptions/`
+AS SELECT *, current_timestamp as bronze_ts, _metadata.file_path as _metadata_file_path FROM parquet. `/Volumes/${confs.p_catalog}/${confs.p_schema_ingestion}/raw_data/customer/product_subscriptions/`
 
 -- COMMAND ----------
 

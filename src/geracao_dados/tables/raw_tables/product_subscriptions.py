@@ -2,14 +2,15 @@
 dbutils.widgets.text("p_catalog", "dev")
 dbutils.widgets.text("p_schema", "customer_bronze")
 dbutils.widgets.text("p_data_schema", "ingestion")
+dbutils.widgets.text("p_schema_misc", "misc")
 
 p_catalog = dbutils.widgets.get("p_catalog")
 p_schema = dbutils.widgets.get("p_schema")
 p_data_schema = dbutils.widgets.get("p_data_schema")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
 
-
-table_aux_tbl_produtos = f"{p_catalog}.misc.aux_tbl_produtos"
-table_aux_tbl_clientes = f"{p_catalog}.misc.aux_tbl_clientes"
+table_aux_tbl_produtos = f"{p_catalog}.{p_schema_misc}.aux_tbl_produtos"
+table_aux_tbl_clientes = f"{p_catalog}.{p_schema_misc}.aux_tbl_clientes"
 
 volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/product_subscriptions"
 
@@ -21,7 +22,7 @@ volume_path = f"/Volumes/{p_catalog}/{p_data_schema}/raw_data/customer/product_s
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC create schema if not exists $p_catalog.$p_schema
+# MAGIC -- Schema creation moved to bundle definition
 
 # COMMAND ----------
 

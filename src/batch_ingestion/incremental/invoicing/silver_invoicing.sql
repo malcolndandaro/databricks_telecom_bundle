@@ -9,7 +9,7 @@ AS
 select
   *
 from
-  STREAM(${confs.p_catalog}.billing_bronze.invoicing)
+  STREAM(${confs.p_catalog}.${confs.p_schema_billing_bronze}.invoicing)
 
 -- COMMAND ----------
 

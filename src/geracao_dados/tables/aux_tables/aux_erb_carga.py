@@ -1,6 +1,10 @@
 # Databricks notebook source
 dbutils.widgets.text("catalog_name","databricks_telecom_bundle", "Nome do catálogo")
-catalog_name        = dbutils.widgets.get("catalog_name")
+dbutils.widgets.text("p_schema_misc", "misc", "Schema for misc tables")
+dbutils.widgets.text("p_schema_resource_bronze", "resource_bronze", "Schema for resource bronze tables")
+catalog_name = dbutils.widgets.get("catalog_name")
+p_schema_misc = dbutils.widgets.get("p_schema_misc")
+p_schema_resource_bronze = dbutils.widgets.get("p_schema_resource_bronze")
 
 # COMMAND ----------
 
@@ -8,23 +12,12 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 # COMMAND ----------
 
+# Schema creation moved to bundle definition
+# Create volume for ERBs data
 sql_query = f"""
-CREATE schema if not exists {catalog_name}.misc
-"""
-spark.sql(sql_query)
-
-# COMMAND ----------
-
-sql_query = f"""
-CREATE VOLUME if not exists {catalog_name}.misc.erbs
+CREATE VOLUME if not exists {catalog_name}.{p_schema_misc}.erbs
 COMMENT 'Dados de ERBs, csv e pickle'
 """
-spark.sql(sql_query)
-
-# COMMAND ----------
-
-sql_query = f"""
-CREATE schema if not exists {catalog_name}.resource_bronze"""
 spark.sql(sql_query)
 
 # COMMAND ----------
@@ -64,8 +57,8 @@ display(df_erb)
 
 # COMMAND ----------
 
-df_erb.write.mode("overwrite").saveAsTable(f"{catalog_name}.resource_bronze.erb_coord")
+df_erb.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_resource_bronze}.erb_coord")
 
 # COMMAND ----------
 
-erb2 = spark.read.table(f"{catalog_name}.resource_bronze.erb_coord")
+erb2 = spark.read.table(f"{catalog_name}.{p_schema_resource_bronze}.erb_coord")

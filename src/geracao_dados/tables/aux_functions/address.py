@@ -16,7 +16,7 @@ dbutils.widgets.text("p_schema", "misc")
 # MAGIC    READS SQL DATA SQL SECURITY DEFINER
 # MAGIC    NOT DETERMINISTIC
 # MAGIC    COMMENT 'Retorna Código do UF com base no DDD'
-# MAGIC    RETURN SELECT codigo_uf FROM misc.aux_tbl_municipios WHERE ddd = p_codigo_ddd order by rand() limit 1;
+# MAGIC    RETURN SELECT codigo_uf FROM $p_schema.aux_tbl_municipios WHERE ddd = p_codigo_ddd order by rand() limit 1;
 # MAGIC
 
 # COMMAND ----------
@@ -28,7 +28,7 @@ dbutils.widgets.text("p_schema", "misc")
 # MAGIC    READS SQL DATA SQL SECURITY DEFINER
 # MAGIC    NOT DETERMINISTIC
 # MAGIC    COMMENT 'Retorna uma cidade aleatoria (CODIGO_IBGE) com base no DDD e UF'
-# MAGIC    RETURN SELECT CODIGO_IBGE FROM misc.aux_tbl_municipios WHERE codigo_uf = p_codigo_uf and p_codigo_ddd = ddd order by rand() limit 1;
+# MAGIC    RETURN SELECT CODIGO_IBGE FROM $p_schema.aux_tbl_municipios WHERE codigo_uf = p_codigo_uf and p_codigo_ddd = ddd order by rand() limit 1;
 # MAGIC
 
 # COMMAND ----------
@@ -39,5 +39,5 @@ dbutils.widgets.text("p_schema", "misc")
 # MAGIC    RETURNS STRING
 # MAGIC    READS SQL DATA SQL SECURITY DEFINER
 # MAGIC    NOT DETERMINISTIC
-# MAGIC    RETURN SELECT nome FROM misc.aux_tbl_municipios WHERE codigo_ibge = p_codigo_ibge limit 1;
+# MAGIC    RETURN SELECT nome FROM $p_schema.aux_tbl_municipios WHERE codigo_ibge = p_codigo_ibge limit 1;
 # MAGIC

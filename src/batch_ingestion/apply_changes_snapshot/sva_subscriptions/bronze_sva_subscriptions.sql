@@ -22,7 +22,7 @@ CREATE OR REFRESH MATERIALIZED VIEW sva_subscriptions
     _metadata_file_path STRING COMMENT 'Caminho do Arquivo de Origem',
     CONSTRAINT pk_sva_subscriptions PRIMARY KEY (msisdn, productid, data_contratacao)
 )
-AS SELECT *, current_timestamp as bronze_ts, _metadata.file_path as _metadata_file_path FROM parquet.`/Volumes/${confs.p_catalog}/ingestion/raw_data/customer/sva_subscriptions/`
+AS SELECT *, current_timestamp as bronze_ts, _metadata.file_path as _metadata_file_path FROM parquet.`/Volumes/${confs.p_catalog}/${confs.p_schema_ingestion}/raw_data/customer/sva_subscriptions/`
 
 -- COMMAND ----------
 

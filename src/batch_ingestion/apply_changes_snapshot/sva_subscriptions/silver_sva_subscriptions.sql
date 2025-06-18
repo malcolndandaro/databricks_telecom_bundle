@@ -5,7 +5,7 @@ CREATE TEMPORARY LIVE VIEW bronze_sva_subscriptions
   CONSTRAINT tipo_linha EXPECT (tplinha in ('Fixa', 'Móvel'))
 ) AS
 select * except(_metadata_file_path, bronze_ts)
-from ${confs.p_catalog}.customer_bronze.sva_subscriptions
+from ${confs.p_catalog}.${confs.p_schema_customer_bronze}.sva_subscriptions
 
 -- COMMAND ----------
 

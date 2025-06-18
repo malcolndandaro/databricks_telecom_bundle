@@ -43,7 +43,7 @@ reset = dbutils.widgets.get('reset') == 'True'
 
 # DBTITLE 1,Defining Center Clustering
 address_df = (spark
-              .read.table(f'{catalog_name}.misc.aux_enderecos')
+              .read.table(f'{catalog_name}.{p_schema_misc}.aux_enderecos')
             )
 
 dim = address_df.select(
@@ -83,7 +83,7 @@ address_df = (
 
 # COMMAND ----------
 
-address_df.write.mode('overwrite').saveAsTable(f'{catalog_name}.misc.aux_enderecos_grp')
+address_df.write.mode('overwrite').saveAsTable(f'{catalog_name}.{p_schema_misc}.aux_enderecos_grp')
 
 # COMMAND ----------
 
@@ -92,7 +92,7 @@ address_df.write.mode('overwrite').saveAsTable(f'{catalog_name}.misc.aux_enderec
 
 # COMMAND ----------
 
-erb_df = spark.read.table(f'{catalog_name}.misc.aux_erb_coord')
+erb_df = spark.read.table(f'{catalog_name}.{p_schema_misc}.aux_erb_coord')
 display(erb_df)
 
 # COMMAND ----------

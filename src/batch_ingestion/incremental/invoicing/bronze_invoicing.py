@@ -1,14 +1,5 @@
 # Databricks notebook source
 import dlt
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    DateType,
-    ShortType,
-    ByteType,
-    DecimalType,
-)
 from pyspark.sql.functions import current_timestamp, expr
 
 # COMMAND ----------
@@ -17,8 +8,15 @@ try:
     spark.conf.get("confs.p_catalog")
 except:
     spark.conf.set("confs.p_catalog", "dev")
+
+try: 
+    spark.conf.get("confs.p_schema_ingestion")
+except:
+    spark.conf.set("confs.p_schema_ingestion", "ingestion")
+
 p_catalog = spark.conf.get("confs.p_catalog")
-data_path = f"/Volumes/{p_catalog}/ingestion/raw_data/billing/invoicing/"
+p_schema_ingestion = spark.conf.get("confs.p_schema_ingestion")
+data_path = f"/Volumes/{p_catalog}/{p_schema_ingestion}/raw_data/billing/invoicing/"
 
 # COMMAND ----------
 

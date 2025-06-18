@@ -13,14 +13,83 @@ include:
   - src/data_warehousing/jobs/*.yml
   - src/bundle_orchestrator/jobs/*.yml
 
-
+resources:
+  schemas:
+    ingestion:
+      name: ${var.schema_ingestion}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for raw data ingestion and volumes
+    misc:
+      name: ${var.schema_misc}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for auxiliary tables and utility data
+    customer_bronze:
+      name: ${var.schema_customer_bronze}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for bronze layer customer data
+    customer_silver:
+      name: ${var.schema_customer_silver}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for silver layer customer data with basic transformations
+    customer_gold:
+      name: ${var.schema_customer_gold}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for gold layer customer dimensions and clean data
+    billing_bronze:
+      name: ${var.schema_billing_bronze}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for bronze layer billing data
+    billing_silver:
+      name: ${var.schema_billing_silver}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for silver layer billing data with basic transformations
+    billing_gold:
+      name: ${var.schema_billing_gold}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for gold layer billing facts and aggregated data
+    resource_bronze:
+      name: ${var.schema_resource_bronze}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for bronze layer resource and infrastructure data
+    resource_silver:
+      name: ${var.schema_resource_silver}
+      catalog_name: ${var.catalog_name}
+      comment: Schema for silver layer resource data with basic transformations
 
 variables:
   catalog_name:
     description: Catalogo utilizado para criar os objetos
     default: databricks_telecom_bundle
-
-
+  schema_ingestion:
+    description: Schema name for raw data ingestion
+    default: ingestion
+  schema_misc:
+    description: Schema name for auxiliary tables and utility data
+    default: misc
+  schema_customer_bronze:
+    description: Schema name for bronze layer customer data
+    default: customer_bronze
+  schema_customer_silver:
+    description: Schema name for silver layer customer data
+    default: customer_silver
+  schema_customer_gold:
+    description: Schema name for gold layer customer dimensions
+    default: customer_gold
+  schema_billing_bronze:
+    description: Schema name for bronze layer billing data
+    default: billing_bronze
+  schema_billing_silver:
+    description: Schema name for silver layer billing data
+    default: billing_silver
+  schema_billing_gold:
+    description: Schema name for gold layer billing facts
+    default: billing_gold
+  schema_resource_bronze:
+    description: Schema name for bronze layer resource data
+    default: resource_bronze
+  schema_resource_silver:
+    description: Schema name for silver layer resource data
+    default: resource_silver
 
 targets:
   dev:
@@ -30,6 +99,17 @@ targets:
     # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
     mode: development
     default: true
+    variables:
+      schema_ingestion: ingestion
+      schema_misc: misc
+      schema_customer_bronze: customer_bronze
+      schema_customer_silver: customer_silver
+      schema_customer_gold: customer_gold
+      schema_billing_bronze: billing_bronze
+      schema_billing_silver: billing_silver
+      schema_billing_gold: billing_gold
+      schema_resource_bronze: resource_bronze
+      schema_resource_silver: resource_silver
 
   prod:
     mode: production
