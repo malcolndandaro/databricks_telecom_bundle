@@ -30,7 +30,7 @@ df_aux_tbl_clientes = spark.read.table(aux_tbl_clientes)
 # COMMAND ----------
 
 schema_ddl = """
-    SK_DIM_CUSTOMER BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY COMMENT 'Chave Primária',
+    SK_DIM_CUSTOMER BIGINT GENERATED ALWAYS AS IDENTITY COMMENT 'Chave Primária',
     ROW_INGESTION_TIMESTAMP TIMESTAMP COMMENT 'Timestamp de Ingestao da Linha',
     NU_DOCT STRING COMMENT 'Número do Documento',
     NU_TLFN STRING COMMENT 'Numero do telefone do usuario',

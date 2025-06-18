@@ -7,9 +7,17 @@ resources:
           pipeline_task:
             pipeline_id: ${resources.pipelines.pipeline_dim_date.id}
             full_refresh: false
-        - task_key: dim_customer
+        - task_key: dim_customer_no_refresh
           depends_on:
             - task_key: dim_date
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pipeline_dim_customer.id}
+            full_refresh: false
+          max_retries: 1
+          min_retry_interval_millis: 120000
+        - task_key: dim_customer
+          depends_on:
+            - task_key: dim_customer_no_refresh
           pipeline_task:
             pipeline_id: ${resources.pipelines.pipeline_dim_customer.id}
             full_refresh: true
