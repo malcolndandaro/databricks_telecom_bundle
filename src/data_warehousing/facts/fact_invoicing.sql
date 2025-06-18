@@ -25,7 +25,6 @@ CREATE OR REFRESH STREAMING TABLE fact_invoicing (
     VL_RCRG DECIMAL(5,2) COMMENT 'Valor do Recarga',
     GOLD_TS	TIMESTAMP COMMENT 'Data de Ingestao do Registro para camada Gold',
     CONSTRAINT SK_FACT_INVOICING_DIM_DATE_FK FOREIGN KEY (SK_DIM_DATE) REFERENCES ${confs.p_catalog}.${confs.p_schema_misc}.dim_date,
-CONSTRAINT SK_FACT_INVOICING_DIM_CUSTOMER_FK FOREIGN KEY (SK_DIM_CUSTOMER) REFERENCES ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_customer,
 CONSTRAINT SK_FACT_INVOICING_DIM_PRODUCT_FK FOREIGN KEY (SK_DIM_PRODUCT) REFERENCES ${confs.p_catalog}.${confs.p_schema_customer_gold}.dim_product
     )
   CLUSTER BY (SK_DIM_DATE, SK_DIM_CUSTOMER, SK_DIM_PRODUCT)
