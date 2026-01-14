@@ -1,6 +1,6 @@
 ---
 name: dabs-writer
-description: "Create and configure Databricks Asset Bundles (DABs) with best practices for multi-environment deployments. Use when working with: (1) Creating new DAB projects, (2) Adding resources (dashboards, pipelines, jobs, alerts), (3) Configuring multi-environment deployments, (4) Setting up permissions, (5) Deploying or running bundle resources"
+description: "Create and configure Databricks Asset Bundles (DABs) with best practices for multi-environment deployments. Use when working with: (1) Creating new DAB projects,(2) Any modification to databricks.yml or resources/*.yml, (3) Adding ANY resource type (dashboards, pipelines, jobs, alerts, warehouses, schemas, volumes, clusters, apps), (4) Configuring variables, targets, or multi-environment deployments, (5) Setting up permissions or grants, (6) Path resolution questions (../src/ vs ./src/). This skill ensures correct YAML syntax and DAB best practices - use it even for simple single-resource additions."
 ---
 
 # Databricks Asset Bundle (DABs) Writer
