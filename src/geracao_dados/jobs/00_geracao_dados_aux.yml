@@ -105,7 +105,7 @@ resources:
               - Faker==28.4.1
               - dbldatagen==0.4.0.post1
               - faiss-cpu==1.8.0.post1
-      performance_target: OPTIMIZED
+      performance_target: PERFORMANCE_OPTIMIZED
       tags:
         cost_center: "100.001"
         domain: misc
