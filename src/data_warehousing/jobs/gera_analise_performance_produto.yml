@@ -3,10 +3,21 @@ resources:
     Data_Warehousing_3_Gera_Analise_performance_produto:
       name: "[Data Warehousing][3] Gera Analise performance produto"
       tasks:
-        - task_key: gera_analise_performance_produto
+        - task_key: gera_analise_performance_produto_no_refresh
           pipeline_task:
             pipeline_id: ${resources.pipelines.analise_performance_produto.id}
             full_refresh: false
+          max_retries: 1
+          min_retry_interval_millis: 120000
+        - task_key: gera_analise_performance_produto
+          depends_on:
+            - task_key: gera_analise_performance_produto_no_refresh
+          run_if: AT_LEAST_ONE_FAILED
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.analise_performance_produto.id}
+            full_refresh: true
+          max_retries: 1
+          min_retry_interval_millis: 120000
       tags:
         cost_center: "300.02"
         domain: customer

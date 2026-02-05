@@ -3,10 +3,21 @@ resources:
     Data_Warehousing_2_Gera_Fato_Invoicing:
       name: "[Data Warehousing][2] Gera Fato - Invoicing"
       tasks:
-        - task_key: fact_invoicing
+        - task_key: fact_invoicing_no_refresh
           pipeline_task:
             pipeline_id: ${resources.pipelines.pipeline_fact_invoicing.id}
             full_refresh: false
+          max_retries: 1
+          min_retry_interval_millis: 120000
+        - task_key: fact_invoicing
+          depends_on:
+            - task_key: fact_invoicing_no_refresh
+          run_if: AT_LEAST_ONE_FAILED
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pipeline_fact_invoicing.id}
+            full_refresh: true
+          max_retries: 1
+          min_retry_interval_millis: 120000
       tags:
         cost_center: "200.001"
         domain: billing

@@ -128,7 +128,7 @@ display(client_location1)
 
 # COMMAND ----------
 
-client_location1.write.saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_tbl_cliente_localizacao")
+client_location1.write.mode("overwrite").saveAsTable(f"{catalog_name}.{p_schema_misc}.aux_tbl_cliente_localizacao")
 dbutils.notebook.exit("success")
 
 # COMMAND ----------

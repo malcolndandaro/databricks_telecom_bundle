@@ -18,6 +18,7 @@ resources:
         - task_key: dim_customer
           depends_on:
             - task_key: dim_customer_no_refresh
+          run_if: AT_LEAST_ONE_FAILED
           pipeline_task:
             pipeline_id: ${resources.pipelines.pipeline_dim_customer.id}
             full_refresh: true

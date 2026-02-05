@@ -1,6 +1,6 @@
 ---
 name: spark-declarative-pipelines
-description: "Creates, configures, and updates Databricks Lakeflow Spark Declarative Pipelines (SDP/LDP) using serverless compute. Handles streaming tables, materialized views, CDC, SCD Type 2, and Auto Loader ingestion patterns. Use when building data pipelines, working with Delta Live Tables, ingesting streaming data, implementing change data capture, or when the user mentions SDP, LDP, DLT, Lakeflow pipelines, streaming tables, or bronze/silver/gold medallion architectures."
+description: "Creates, configures, updates, reviews, and troubleshoots Databricks Lakeflow Spark Declarative Pipelines (SDP/LDP) using serverless compute. Handles streaming tables, materialized views, CDC, SCD Type 2, and Auto Loader ingestion. Use when: (1) building new data pipelines, (2) reviewing or auditing existing pipelines for best practices, (3) migrating legacy DLT Python to modern SDP, (4) troubleshooting pipeline failures. Triggers: SDP, LDP, DLT, Delta Live Tables, Lakeflow, streaming tables, materialized views, APPLY CHANGES, CDC, bronze/silver/gold, medallion architecture, @dlt.table, @dp.table, read_files, cloudFiles, pipeline review, pipeline audit, pipeline best practices."
 ---
 
 # Lakeflow Spark Declarative Pipelines (SDP)
@@ -14,6 +14,59 @@ description: "Creates, configures, and updates Databricks Lakeflow Spark Declara
 - **[Change Data Capture (CDC)](https://docs.databricks.com/aws/en/ldp/cdc)** - AUTO CDC, SCD Type 1/2
 - **[Developing Pipelines](https://docs.databricks.com/aws/en/ldp/develop)** - File structure, testing, validation
 - **[Liquid Clustering](https://docs.databricks.com/aws/en/delta/clustering)** - Modern data layout optimization
+
+---
+
+## Workflow Selection
+
+Determine the task type and follow the appropriate workflow:
+
+| Task | Workflow |
+|------|----------|
+| **Build new pipeline** | Follow "Development Workflow with MCP Tools" below |
+| **Review/audit existing pipelines** | Follow "Review Mode" below |
+| **Migrate legacy DLT to SDP** | See [6-dlt-migration.md](6-dlt-migration.md) |
+| **Troubleshoot pipeline failures** | Use `get_pipeline_events()`, see "Common Issues" |
+
+---
+
+## Review Mode
+
+When asked to **review, audit, check, or improve** existing pipelines:
+
+### Step 1: Locate Pipeline Definitions
+
+Search for pipeline configurations:
+- DAB pipelines: `**/dlt_pipelines/*.yml` or `resources/pipelines` in `databricks.yml`
+- Source files: `.sql` and `.py` files referenced in pipeline `libraries`
+
+### Step 2: Check Against 2025 Best Practices
+
+| Check | Legacy Pattern | Modern Pattern | Reference |
+|-------|---------------|----------------|-----------|
+| Python API | `import dlt` | `from pyspark import pipelines as dp` | [5-python-api.md](5-python-api.md) |
+| Ingestion | `spark.readStream.format("cloudFiles")` | `read_files()` SQL syntax | [1-ingestion-patterns.md](1-ingestion-patterns.md) |
+| Clustering | `PARTITION BY` or none | `CLUSTER BY` (Liquid Clustering) | [4-performance-tuning.md](4-performance-tuning.md) |
+| File format | Notebook (`# Databricks notebook source`) | Raw `.sql`/`.py` files | Best practice |
+| SCD patterns | `dlt.apply_changes()` | `AUTO CDC INTO` SQL syntax | [3-scd-patterns.md](3-scd-patterns.md) |
+
+### Step 3: Review Checklist
+
+- [ ] **Modern API**: Using `pyspark.pipelines` (`dp`) not legacy `dlt`
+- [ ] **SQL preferred**: Transformations in SQL unless Python required
+- [ ] **Liquid Clustering**: `CLUSTER BY` on all tables, especially facts
+- [ ] **Data quality**: Expectations defined (`EXPECT`, `@dp.expect_or_drop`)
+- [ ] **No hardcoded configs**: Variables from pipeline configuration, not `SET` statements
+- [ ] **Raw files**: Not notebook format with `# COMMAND ----------`
+- [ ] **Serverless**: No classic cluster configuration unless required
+
+### Step 4: Provide Recommendations
+
+For each issue found:
+1. Identify the file and line number
+2. Show the current (legacy) code
+3. Show the recommended (modern) code
+4. Reference the appropriate documentation file
 
 ---
 
